@@ -1,0 +1,203 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 3, 2015, 10:39:07 PM
+    Author     : MacDerson
+*/
+@import url(http://fonts.googleapis.com/css?family=Abel|Raleway|Quicksand|Armata|Jura|Oxygen);
+@import url(http://weloveiconfonts.com/api/?family=iconicfill);
+
+body{
+    background: linear-gradient(90deg, #464A4D, #303435);
+}
+.container{
+    font-family: 'Oxygen', sans-serif;
+    position: relative;
+    margin: auto;
+    width: 1000px;
+    height: 930px;
+    /*border: 4px solid #0f0f0f;*/
+    background-color: #f0f0f0;
+    color: #000000;
+}
+
+header{
+    position: relative;
+    height: 100px;
+}
+
+.text-input{
+    position: relative;
+    margin: 20px;
+    width: 50%;
+    height: 30px;
+    padding: 5px;
+    border: 2px solid #cccccc;
+    font-size: 18px;
+}
+.type-but{
+    position: relative;
+    display: inline-block;
+    border: 3px solid #0f0f0f;
+    width: 90px;
+    height: 30px;
+    padding: 5px;
+    margin-left: 15px;
+}
+
+polygon{
+    fill-opacity:0.0;
+    stroke:rgb(244,216,113);
+    stroke-width:3;
+}
+line{
+     stroke:rgb(244,216,113);
+     stroke-width: 3;
+}
+
+.todo{
+    padding: 5px;
+    margin: 20px;
+    border: 2px solid #f0f0f0;
+    color: #0f0f0f;
+    position: relative;
+    background-color: #ffffff;
+    
+    box-shadow: 0 1px 3px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.type, .priority, .recurrence{
+    position: absolute;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 2px;
+    top: 0;
+    background-color: #e3e3e3;
+    color: #000000;
+}
+.type{
+    -webkit-border-bottom-right-radius: 15px;
+    -moz-border-radius-bottomright: 15px;
+    border-bottom-right-radius: 15px;
+    width: 100px;
+    left: 0;
+    padding-left: 5px;
+}
+.priority{
+    width: 120px;
+    right: 30%;
+    text-align: center;
+    background-color: #85F5A6;
+
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-left-radius: 5px;
+}
+.recurrence{
+    width: 120px;
+    right: 15%;
+    text-align: center;
+
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-border-radius-bottomright: 5px;
+    border-bottom-right-radius: 5px;
+
+    -webkit-border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    border-bottom-left-radius: 5px;
+}
+.remove{
+    position: absolute;
+    top: -7px;
+    right: 5px;
+    font-size: 35px;
+    color: #F47771;
+}
+/* iconicfill */
+[class*="iconicfill-"]:before {
+  font-family: 'IconicFill', sans-serif;
+}
+.hr-line{
+    margin-top: 30px;
+    background: #cccccc;
+}
+.text-display{
+    display: inline;
+    position: absolute;
+    border: 2px solid #f0f0f0;
+    left: 5px;
+    width: 97.6%;
+    height: 30px;
+    top: 42px;
+    padding: 4px;
+    font-size: 22px;
+    line-height: 30px;
+}
+
+.button-container{
+    display: inline-block;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    height: 50px;
+    width: 40%;
+    /*border: 1px solid white;*/
+    line-height: 50px;
+    margin-top: 45px;
+}
+
+.send-to, .edit, .completed{
+    display: inline-block;
+    width: 30.24%;
+    text-align: center;
+    height: 45px;
+    line-height: 45px;
+    border: 3px solid #f0f0f0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+}
+.send-to{
+    background-color: #71BDF4;
+}
+.edit{
+    background-color: #F4D871;
+}
+.completed{
+    background-color: #F47771;
+}
+.by{
+    display: inline-block;
+    position: absolute;
+    right: 70px;
+    bottom: 5px;
+    height: 30px;
+    line-height:35px;
+    width: 45%;
+    /*border: 1px solid white;*/
+    vertical-align: top;
+}
+.by-input{
+    /*border: 1px solid red;*/
+    width: 93.5%;
+    display: inline-block;
+    height: 92%;
+}
+.hotspot{
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    bottom: 5px;
+    right: 7px;
+}
