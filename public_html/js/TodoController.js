@@ -151,17 +151,37 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         return todos;
     }
     
+    /**
+     * Sorting based on points system. subtract point a from point b
+     * @param {type} a
+     * @param {type} b
+     * @return {Number}
+     */
     function sortTodos(a, b){
-        if(a.priority === 'HIGH' && b.priority !== 'HIGH'){
-            return -1;
-        }else if(!a.isComplete && b.isComplete){
-            return -1;
-        }else if(b.priority === 'HIGH' && !b.isComplete){
-            return 1;
-        }else{
-            return 0;
+        var aPoints = prioritizeTodo(a);
+        var bPoints = prioritizeTodo(b);
+        return aPoints - bPoints;
+    }
+    
+    /**
+     * Assign points to the given todo based on the factors below:
+     * 1. the given todo starts with 5 points
+     * 2. subtract 2 points is priority is high, 1 if med
+     * 3. subtract 1 point if not yet completed.
+     * @param {type} todo
+     * @return {Number}
+     */
+    function prioritizeTodo(todo){
+        var points = 5;
+        if(todo.priority === 'HIGH'){
+            points -= 2;
+        }else if(todo.priority === 'MED'){
+            points -= 1;
         }
-        
+        if(!todo.isComplete){
+            points -= 1;
+        }
+        return points;
     }
 });
 
