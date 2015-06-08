@@ -19,7 +19,8 @@ body{
     position: relative;
     margin: auto;
     width: 1000px;
-    height: 930px;
+    height: auto;
+    padding-bottom: 10px;
     /*border: 4px solid #0f0f0f;*/
     background-color: #f0f0f0;
     color: #000000;
@@ -93,7 +94,7 @@ line{
 }
 .priority{
     width: 120px;
-    right: 30%;
+    right: 40%;
     text-align: center;
     background-color: #02C03C;
 
@@ -105,8 +106,17 @@ line{
     -moz-border-radius-bottomleft: 5px;
     border-bottom-left-radius: 5px;
 }
+.pri-low{
+    background-color: #02C03C;
+}
+.pri-med{
+    background-color: #F4D871;
+}
+.pri-high{
+    background-color: #F47771;
+}
 .recurrence{
-    width: 120px;
+    width: 180px;
     right: 15%;
     text-align: center;
 
@@ -179,6 +189,9 @@ line{
 .completed{
     background-color: #F47771;
 }
+.completed-tru{
+    background-color: #02C03C;
+}
 .by{
     display: inline-block;
     position: absolute;
@@ -221,8 +234,8 @@ line{
   height: 130px;
 }
 .todo.ng-enter-stagger,
-.todo.ng-enter-stagger,
-.todo.ng-move-stagger {
+.todo.ng-enter-stagger
+{
   /* 50ms between each item being animated after the other */
   -webkit-transition-delay:30ms;
   transition-delay:30ms;

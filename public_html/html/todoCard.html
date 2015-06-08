@@ -4,16 +4,16 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<div class="todo" ng-repeat="todo in todoDTO.todos">
+<div class="todo" id="todo_{{$index}}" ng-repeat="todo in todoDTO.todos">
     <div class="type">{{todo.type}}</div>
     <label class="text-display">{{todo.value}}</label>
-    <div class="priority">Low</div>
+    <div id="priority_{{$index}}" ng-class="{'pri-low' : todo.priority === 'LOW', 'pri-med' : todo.priority === 'MED', 'pri-high' : todo.priority === 'HIGH'}" ng-click="changePriority($index)" class="priority">{{todo.priority}}</div>
     <div class="recurrence">{{todo.recurrence}}</div>
     <span class="iconicfill-x remove"></span>
     <hr class="hr-line">
     <div class="button-container">
         <div class="send-to">Send To</div>
-        <div class="completed">completed</div>
+        <div class="completed" ng-class="{'completed-tru': todo.isComplete}" id="completed_{{$index}}" ng-click="completed($index)">completed</div>
         <div class="edit">Edit</div>                    
     </div>
     <div class="by">By:
