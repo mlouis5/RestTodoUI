@@ -7,7 +7,8 @@ and open the template in the editor.
     Created on : Jun 3, 2015, 10:39:07 PM
     Author     : MacDerson
 */
-@import url(http://fonts.googleapis.com/css?family=Abel|Raleway|Quicksand|Armata|Jura|Oxygen);
+/*Abel|Raleway|Quicksand|Armata|Jura|*/
+@import url(http://fonts.googleapis.com/css?family=Oxygen);
 @import url(http://weloveiconfonts.com/api/?family=iconicfill);
 
 body{
@@ -94,7 +95,7 @@ line{
     width: 120px;
     right: 30%;
     text-align: center;
-    background-color: #85F5A6;
+    background-color: #02C03C;
 
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -143,6 +144,7 @@ line{
     padding: 4px;
     font-size: 22px;
     line-height: 30px;
+    text-transform: uppercase;
 }
 
 .button-container{
@@ -152,21 +154,21 @@ line{
     bottom: 0;
     height: 50px;
     width: 40%;
-    /*border: 1px solid white;*/
     line-height: 50px;
-    margin-top: 45px;
+    margin-top: 40px;
 }
 
 .send-to, .edit, .completed{
     display: inline-block;
     width: 30.24%;
     text-align: center;
-    height: 45px;
-    line-height: 45px;
+    height: 35px;
+    line-height: 35px;
     border: 3px solid #f0f0f0;
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: 300;
     color: #ffffff;
+    cursor: pointer;
 }
 .send-to{
     background-color: #71BDF4;
@@ -201,3 +203,32 @@ line{
     bottom: 5px;
     right: 7px;
 }
+
+
+
+
+/***********ng-repeat animation*************/
+.todo.ng-leave,
+.todo.ng-enter,
+.todo.ng-move {
+  transition: 1s;
+  opacity: 0;
+  height: 5px;
+}
+.todo.ng-enter.todo.ng-enter-active,
+.todo.ng-move.todo.ng-move-active {
+  opacity: 1;
+  height: 130px;
+}
+.todo.ng-enter-stagger,
+.todo.ng-enter-stagger,
+.todo.ng-move-stagger {
+  /* 50ms between each item being animated after the other */
+  -webkit-transition-delay:30ms;
+  transition-delay:30ms;
+
+  /* this is required here to prevent any CSS inheritance issues */
+  -webkit-transition-duration:0;
+  transition-duration:0;
+}
+/***********end ng-repeat animation*************/

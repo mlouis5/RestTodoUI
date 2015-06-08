@@ -4,11 +4,11 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<div class="todo">
-    <div class="type">Todo</div>
-    <label class="text-display">Buy Milk</label>
+<div class="todo" ng-repeat="todo in todoDTO.todos">
+    <div class="type">{{todo.type}}</div>
+    <label class="text-display">{{todo.value}}</label>
     <div class="priority">Low</div>
-    <div class="recurrence">One-Time</div>
+    <div class="recurrence">{{todo.recurrence}}</div>
     <span class="iconicfill-x remove"></span>
     <hr class="hr-line">
     <div class="button-container">
@@ -17,7 +17,7 @@ and open the template in the editor.
         <div class="edit">Edit</div>                    
     </div>
     <div class="by">By:
-        <span class="by-input"></span>
+        <span class="by-input">{{todo.createdBy.fname}} {{todo.createdBy.lname}}</span>
     </div>
 
     <div class="hotspot">

@@ -9,13 +9,14 @@ and open the template in the editor.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        
         <link rel="stylesheet" type="text/css" href="css/page.css" />
         <link rel="import" type="text/html" href="html/todoCard.html" />
     </head>
-    <body>
-
-        <div class="container">
+    <body ng-app="myapp">
+        <div class="container" ng-controller="TodoController">
             <header>
                 <input type="text" placeholder="Search"/>
             </header>
@@ -26,7 +27,8 @@ and open the template in the editor.
                 <div class="type-but list-but"></div>
             </div>
 
-            <div class="todo">
+            <to-do></to-do>
+<!--            <div class="todo">
                 <div class="type">Todo</div>
                 <label class="text-display">Buy Milk</label>
                 <div class="priority">Low</div>
@@ -52,10 +54,12 @@ and open the template in the editor.
                     <line x1="39" y1="40" x2="40" y2="39" />
                     </svg>
                 </div>
-            </div>
+            </div>-->
         </div>
 
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-animate.js"></script>
+        <script type="text/javascript" src="js/TodoController.js"></script>
     </body>
 </html>
