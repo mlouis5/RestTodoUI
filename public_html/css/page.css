@@ -8,27 +8,39 @@ and open the template in the editor.
     Author     : MacDerson
 */
 /*Abel|Raleway|Quicksand|Armata|Jura|*/
-@import url(http://fonts.googleapis.com/css?family=Oxygen);
+/*@import url(http://fonts.googleapis.com/css?family=Oxygen);*/
 @import url(http://weloveiconfonts.com/api/?family=iconicfill);
 
+@font-face{
+    font-family: 'Walkway Black';
+    src: url('fonts/Walkway_Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 body{
+    font-family: 'Walkway Black', sans-serif;
     background: linear-gradient(90deg, #464A4D, #303435);
 }
 .container{
-    font-family: 'Oxygen', sans-serif;
     position: relative;
     margin: auto;
     width: 1000px;
-    height: auto;
+    height: 1000px;
     padding-bottom: 10px;
     /*border: 4px solid #0f0f0f;*/
     background-color: #f0f0f0;
     color: #000000;
+    overflow-x: hidden
 }
 
 header{
     position: relative;
     height: 100px;
+}
+
+.todo-val-container{
+    max-height: 84px;
+    min-height: 84px;
 }
 
 .text-input{
@@ -48,6 +60,9 @@ header{
     height: 30px;
     padding: 5px;
     margin-left: 15px;
+    text-align: center;
+    line-height: 30px;
+    color: #3f3f3f;
 }
 
 polygon{
@@ -205,7 +220,7 @@ line{
 }
 .by-input{
     /*border: 1px solid red;*/
-    width: 93.5%;
+    width: 93%;
     display: inline-block;
     height: 92%;
 }
@@ -217,6 +232,51 @@ line{
     right: 7px;
 }
 
+#confirmDialog{
+    width: 10px;
+    height: 10px;
+    border: none;
+    border-top: 5px solid #F4D871;
+    text-align: center;
+}
+#confirmBanner{
+    position: relative;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    font-size: 35px;
+    text-spacing: 2px;
+    background-color: #F4D871; 
+    color: #5f5f5f;
+}
+#confirmDialog > label{
+    display: inline-block;
+    height: 30px;
+    width: 100%;
+    font-size: 25px;
+    font-weight: 400;
+    text-align: center;
+    line-height: 30px;
+}
+#confirmDialog > .diaBtn{
+    width: 100px;
+    height: 45px;
+    padding: 5px;
+    text-align: center;
+    line-height: 45px;
+    font-size: 20px;
+    display: inline-block;
+}
+#confirmDialog > .confirm{
+    background-color: #02C03C;
+    color: #f0f0f0;
+}
+#confirmDialog > .cancel{
+    background-color: #F47771;
+    color: #f0f0f0;
+}
 
 
 
@@ -226,19 +286,27 @@ line{
 .todo.ng-move {
   transition: 1s;
   opacity: 0;
-  height: 5px;
+  /*height: 5px;*/
+  width: 0%;
 }
 .todo.ng-enter.todo.ng-enter-active,
 .todo.ng-move.todo.ng-move-active {
   opacity: 1;
-  height: 130px;
+  /*height: 130px;*/
+  width: 95%;
 }
+.todo.ng-leave.todo.ng-leave-active{
+    transition: 1s;
+    opacity: 0;
+    width: 0;
+}
+
 .todo.ng-enter-stagger,
 .todo.ng-enter-stagger
 {
   /* 50ms between each item being animated after the other */
-  -webkit-transition-delay:30ms;
-  transition-delay:30ms;
+  -webkit-transition-delay:50ms;
+  transition-delay:50ms;
 
   /* this is required here to prevent any CSS inheritance issues */
   -webkit-transition-duration:0;

@@ -19,6 +19,31 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.todoDTO = {};
 
     var users = {};
+    var dialog = {};
+    dialog.window = document.getElementById('confirmDialog');
+
+
+    function initDialogCloseBtn() {
+        $('#closeConfirm').on("click", function () {
+            console.log(dialog.window);
+            console.log(dialog.window.dialogArguments);
+            var todo = $scope.todoDTO.todos[dialog.windowIndex];
+            todo.isRemoved = true;
+
+            $http.put('http://localhost:8080/todo/edit', todo).
+                    success(function (data) {
+                        todo = data;
+                        if (todo !== undefined) {
+                            closeConfirmDialog();
+                        }
+                    }).
+                    error(function () {
+                        closeConfirmDialog();
+                    });
+        });
+    }
+    ;
+    initDialogCloseBtn();
 
     $http.get('http://localhost:8080/todo').
             success(function (data) {
@@ -33,8 +58,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.completed = function (index) {
         var todos = $scope.todoDTO;
         var todo = $scope.todoDTO.todos[index];
-        
-        if(todo.isComplete){
+
+        if (todo.isComplete) {
             return;
         }
 
@@ -49,6 +74,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                             var temp = $scope.todoDTO.todos.splice(index, 1).pop();
                             $timeout(function () {
                                 $scope.todoDTO.todos.push(temp);
+                                $scope.todoDTO.todos.sort(sortTodos);
                             });
                             console.log($scope.todoDTO.todos);
                         });
@@ -56,18 +82,18 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 //                console.log($scope.todoDTO);
                 });
     };
-    
-    $scope.changePriority = function(index){
+
+    $scope.changePriority = function (index) {
         var todo = $scope.todoDTO.todos[index];
         var prio = todo.priority;
-        if(prio === 'LOW'){
+        if (prio === 'LOW') {
             todo.priority = 'MED';
-        }else if(prio === 'MED'){
+        } else if (prio === 'MED') {
             todo.priority = 'HIGH';
-        }else{
+        } else {
             todo.priority = 'LOW';
         }
-        
+
         $http.put('http://localhost:8080/todo/edit', todo).
                 success(function (data) {
                     todo = data;
@@ -80,14 +106,64 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 });
     };
 
-    function getPriorityBgColor(todo){
+    $scope.remove = function (index) {
+        dialog.windowIndex = index;
+        dialog.isOpen = true;
+        dialog.window.addEventListener('close', function (e) {
+            $(dialog.window).css({
+                width: '10px',
+                height: '10px'
+            }).children().css({
+                opacity: 0
+            });
+            console.log('closing...');
+            console.log(e);
+            dialog.isOpen = false;
+        });
+        dialog.window.showModal();
+        $(dialog.window).animate({
+            width: '400px',
+            height: '125px',
+            opacity: 1
+        }, 500).children().css({
+            opacity: 0
+        }).animate({
+            opacity: 1
+        }, 1500);
+
+    };
+
+    function closeConfirmDialog() {
+        $(dialog.window).animate({
+            width: '10px',
+            height: '10px',
+            opacity: 0
+        }, 500);
+        $("#todo_" + dialog.windowIndex).delay(400).animate({
+            width: 0,
+            height: 0,
+            margin: 0,
+            opacity: 0,
+            display: 'none'
+        }, 1000, function () {
+            dialog.windowIndex = undefined;
+            dialog.window.close();
+            dialog.isOpen = false;
+
+            $timeout(function () {
+                $scope.todoDTO.todos.splice(dialog.windowIndex, 0);
+            });
+        });
+    }
+
+    function getPriorityBgColor(todo) {
         var prio = todo.priority;
         var bgColor = undefined;
-        if(prio === 'LOW'){
-            bgColor = '#02C03C';            
-        }else if(prio === 'MED'){
+        if (prio === 'LOW') {
+            bgColor = '#02C03C';
+        } else if (prio === 'MED') {
             bgColor = '#F4D871';
-        }else{
+        } else {
             bgColor = '#F47771';
         }
         return bgColor;
@@ -150,19 +226,19 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         });
         return todos;
     }
-    
+
     /**
      * Sorting based on points system. subtract point a from point b
      * @param {type} a
      * @param {type} b
      * @return {Number}
      */
-    function sortTodos(a, b){
+    function sortTodos(a, b) {
         var aPoints = prioritizeTodo(a);
         var bPoints = prioritizeTodo(b);
         return aPoints - bPoints;
     }
-    
+
     /**
      * Assign points to the given todo based on the factors below:
      * 1. the given todo starts with 5 points
@@ -171,14 +247,14 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
      * @param {type} todo
      * @return {Number}
      */
-    function prioritizeTodo(todo){
+    function prioritizeTodo(todo) {
         var points = 5;
-        if(todo.priority === 'HIGH'){
+        if (todo.priority === 'HIGH') {
             points -= 2;
-        }else if(todo.priority === 'MED'){
+        } else if (todo.priority === 'MED') {
             points -= 1;
         }
-        if(!todo.isComplete){
+        if (!todo.isComplete) {
             points -= 1;
         }
         return points;

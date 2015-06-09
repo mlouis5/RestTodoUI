@@ -9,7 +9,7 @@ and open the template in the editor.
     <label class="text-display">{{todo.value}}</label>
     <div id="priority_{{$index}}" ng-class="{'pri-low' : todo.priority === 'LOW', 'pri-med' : todo.priority === 'MED', 'pri-high' : todo.priority === 'HIGH'}" ng-click="changePriority($index)" class="priority">{{todo.priority}}</div>
     <div class="recurrence">{{todo.recurrence}}</div>
-    <span class="iconicfill-x remove"></span>
+    <span class="iconicfill-x remove" ng-click="remove($index)"></span>
     <hr class="hr-line">
     <div class="button-container">
         <div class="send-to">Send To</div>
@@ -32,3 +32,6 @@ and open the template in the editor.
         </svg>
     </div>
 </div>
+
+
+
