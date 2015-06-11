@@ -43,10 +43,10 @@ app.directive('transformPin', function () {
                 ngModel.$formatters.push(function (value) {
                     var dt = new Date(value);
                     return '';
-                })
+                });
             }
         }
-    }
+    };
 });
 
 app.controller("TodoController", function ($scope, $http, $timeout) {
