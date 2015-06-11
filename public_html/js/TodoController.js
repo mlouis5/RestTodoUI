@@ -14,36 +14,52 @@ app.directive("toDo", function () {
         }
     };
 });
+app.directive('transformDate', function () {
+    return{
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            if (ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    return new Date(value).getTime();
+                });
+                ngModel.$formatters.push(function (value) {
+//                     var dt = moment(value);
+//                     return dt.format("MM/DD/YYYY");
+                    return '';
+                });
+            }
+        }
+    };
+});
+app.directive('transformPin', function () {
+    return{
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            if (ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    return md5(value);
+                    ;
+                });
+                ngModel.$formatters.push(function (value) {
+                    var dt = new Date(value);
+                    return '';
+                })
+            }
+        }
+    }
+});
 
 app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.todoDTO = {};
+    $scope.todoModel = {};
 
     var users = {};
     var dialog = {};
     dialog.window = document.getElementById('confirmDialog');
 
-
-    function initDialogCloseBtn() {
-        $('#closeConfirm').on("click", function () {
-            console.log(dialog.window);
-            console.log(dialog.window.dialogArguments);
-            var todo = $scope.todoDTO.todos[dialog.windowIndex];
-            todo.isRemoved = true;
-
-            $http.put('http://localhost:8080/todo/edit', todo).
-                    success(function (data) {
-                        todo = data;
-                        if (todo !== undefined) {
-                            closeConfirmDialog();
-                        }
-                    }).
-                    error(function () {
-                        closeConfirmDialog();
-                    });
-        });
-    }
-    ;
+    initTodoModel($scope.todoModel);
     initDialogCloseBtn();
+    initAddTodoBtn();
 
     $http.get('http://localhost:8080/todo').
             success(function (data) {
@@ -130,7 +146,56 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         }).animate({
             opacity: 1
         }, 1500);
+    };
 
+    $scope.pinChanged = function () {
+        var element = $('#todo-pin');
+        var pin = element.val();
+        if (pin.length === 4) {
+            var email = $('#todo-email').val();
+            console.log('email: ' + email);
+            if (email && email.indexOf('@') > 0) {
+                console.log('email is valid');
+                var user = findUserByEmail(email);
+                if (user !== undefined) {
+                    console.log('user is valid');
+                    var encryptedPin = user.pin;
+                    var inputPin = md5(pin);
+
+                    console.log('enc pin: ' + encryptedPin);
+                    console.log('inp pin: ' + inputPin);
+                    
+                    if (encryptedPin === inputPin) {
+                        console.log('pins are valid');
+                        $scope.todoModel.createdBy = user;
+                        $scope.todoModel.createdBy.todoList = undefined;
+                        console.log('user found');
+                        element.fadeOut(400).animate({
+                            width: 0
+                        }, 150);
+                        $('#pin-label').animate({
+                            width: '98.3%'
+                        }, 500).addClass('pin-transition').on('click', function () {
+                            console.log('pin clicked');
+                            console.log('posting:');
+                            console.log($scope.todoModel);
+                            $http.post('http://localhost:8080/todo/add', $scope.todoModel).
+                                    success(function (data) {
+                                        var todo = data;
+                                        if (todo !== undefined) {
+                                            console.log('Added todo successfully');
+                                            console.log(todo);
+                                            $scope.todoDTO.todos.push(todo);
+                                            $scope.todoDTO.todos.sort(sortTodos);
+                                        }
+                                    });
+                        });
+                    }
+                }
+            }
+        } else {
+            element.unbind('click');
+        }
     };
 
     function closeConfirmDialog() {
@@ -258,6 +323,68 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             points -= 1;
         }
         return points;
+    }
+
+    function initDialogCloseBtn() {
+        $('#closeConfirm').on("click", function () {
+            console.log(dialog.window);
+            console.log(dialog.window.dialogArguments);
+            var todo = $scope.todoDTO.todos[dialog.windowIndex];
+            todo.isRemoved = true;
+
+            $http.put('http://localhost:8080/todo/edit', todo).
+                    success(function (data) {
+                        todo = data;
+                        if (todo !== undefined) {
+                            closeConfirmDialog();
+                        }
+                    }).
+                    error(function () {
+                        closeConfirmDialog();
+                    });
+        });
+    }
+    ;
+
+    function initAddTodoBtn() {
+        var $input = $('#todo-due-by').pickadate();
+
+        $("#as-todo").on('click', function () {
+            initTodoModel($scope.todoModel);
+            var addDialog = document.getElementById('addTodoDialog');
+            addDialog.showModal();
+
+        });
+    }
+
+    function findUserByEmail(email) {
+        var elem = undefined;
+        if (email) {
+            email = email.trim();
+            $scope.todoDTO.todos.forEach(function (element, index, array) {
+                if (element.createdBy.email.toUpperCase() === email.toUpperCase()) {
+                    elem = element.createdBy;
+                }
+            });
+        }
+        return elem;
+    }
+
+    function initTodoModel(model) {
+        model.createdBy = {};
+        model.createdBy.email = undefined;
+        model.createdBy.fname = undefined;
+        model.createdBy.lname = undefined;
+        model.createdBy.pin = undefined;
+        model.createdOn = new Date().getTime();
+        model.dueBy = undefined;
+        model.id = undefined;
+        model.isComplete = false;
+        model.isRemoved = false;
+        model.priority = 'LOW';
+        model.recurrence = 'One-Time';
+        model.type = 'Todo';
+        model.value = undefined;
     }
 });
 

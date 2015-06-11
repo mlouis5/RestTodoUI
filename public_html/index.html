@@ -12,8 +12,11 @@ and open the template in the editor.
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
+        <link rel="stylesheet" type="text/css" href="css/default.css" />
+        <link rel="stylesheet" type="text/css" href="css/default.date.css" />
+        <link rel="stylesheet" type="text/css" href="css/default.time.css" />
         <link rel="stylesheet" type="text/css" href="css/page.css" />
-        <link rel="import" type="text/html" href="html/closeConfirmDialog.html" />
     </head>
     <body ng-app="myapp">
         <div class="container" ng-controller="TodoController">
@@ -21,13 +24,42 @@ and open the template in the editor.
                 <input type="text" placeholder="Search"/>
             </header>
             <div class="todo-val-container">    
-                <input class="text-input" type="text" placeholder="Enter Text"/>
-                <div class="type-but todo-but">As Todo</div>
+                <input class="text-input" type="text" placeholder="Enter Text" ng-model="todoModel.value"/>
+                <div class="type-but todo-but" id="as-todo">As Todo</div>
                 <div class="type-but note-but">As Note</div>
                 <div class="type-but list-but">As List</div>
             </div>
 
+            <div>{{todoModel| json}}</div>
+
             <to-do></to-do>
+
+            <dialog id="addTodoDialog">
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="value-label">Value:</label>
+                    <input class="todoInput" id="todo-value" ng-model="todoModel.value"/>
+                </div>
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="priority-label">Priority:</label>
+                    <input class="todoInput" id="todo-priority" ng-model="todoModel.priority"/>
+                </div>
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="recurrence-label">Recurrence:</label>
+                    <input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>
+                </div>
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="due-by-label">Due By:</label>
+                    <input class="todoInput" id="todo-due-by" transform-date ng-model="todoModel.dueBy"/>
+                </div>
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="email-label">Email:</label>
+                    <input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>
+                </div>
+                <div class="todo-label-input-con">
+                    <label class="add-todo-label" id="pin-label">Pin:</label>
+                    <input class="todoInput" id="todo-pin" transform-pin ng-model="todoModel.createdBy.pin" ng-change="pinChanged()"/>
+                </div>
+            </dialog>
         </div>
 
     <dialog id="confirmDialog">
@@ -36,15 +68,21 @@ and open the template in the editor.
         <div class="diaBtn confirm" id="closeConfirm">Yes</div>
         <div class="diaBtn cancel" id="closeCancel">Cancel</div>
     </dialog>
-    
-    <dialog id="addTodoDialog">
-        <div></div>
-    </dialog>
+
+
+
+
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery-color-2.1.2.js"></script>
+    <script type="text/javascript" src="js/libs/md5/md5.js"></script>
+    <script type="text/javascript" src="js/libs/moment/moment.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-animate.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-animate.js"></script>    
+    <script type="text/javascript" src="js/libs/pickadate/picker.js"></script>
+    <script type="text/javascript" src="js/libs/pickadate/picker.date.js"></script>
+    <script type="text/javascript" src="js/libs/pickadate/picker.time.js"></script>
     <script type="text/javascript" src="js/TodoController.js"></script>
 </body>
 </html>

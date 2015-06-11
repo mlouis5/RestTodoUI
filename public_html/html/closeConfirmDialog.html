@@ -4,9 +4,13 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<dialog id="confirmDialog">
-    <span id="confirmBanner">Confirm Decision</span>
-    <label>Are you sure!</label>
-    <div class="confirm">Yes</div>
-    <div class="cancel">Cancel</div>
+<dialog id="addTodoDialog">
+    <label class="add-todo-label" id="value-label">Value</label>
+    <input class="todoInput" id="todo-value" ng-model="todoModel.value"/>
+    <label class="add-todo-label" id="priority-label">Priority</label>
+    <input class="todoInput" id="todo-priority" ng-model="todoModel.priority"/>
+    <label class="add-todo-label" id="recurrence-label">Recurrence</label>
+    <input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>
+    <label class="add-todo-label" id="due-by-label">Due By</label>
+    <input class="todoInput" id="todo-due-by" ng-model="todoModel.dueBy"/>
 </dialog>

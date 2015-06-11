@@ -278,7 +278,43 @@ line{
     color: #f0f0f0;
 }
 
-
+#addTodoDialog{
+    width: 500px;
+    height: auto;
+}
+.todo-label-input-con{
+    display: inline-block;
+    width: inherit;
+    height: 45px;
+    position: relative;
+    border: 1px solid red;
+    margin-bottom: 10px;
+}
+.add-todo-label{
+    position: relative;
+    margin-right: 10px;
+    display: inline-block;
+    text-align: right;
+    line-height: 40px;
+    padding-left: 5px;
+    border: 2px solid blue;
+    width: 125px;
+    font-size: 24px;
+}
+.todoInput{
+    position: relative;
+    display: inline-block;
+    width: 350px;
+    height: 40px;
+    float: right;
+    font-size: 20px;
+}
+.pin-transition{
+    transition: 1s;
+    text-align: center;
+    width: 98.3%;
+    opacity: 1;
+}
 
 /***********ng-repeat animation*************/
 .todo.ng-leave,
