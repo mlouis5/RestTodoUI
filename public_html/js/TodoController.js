@@ -63,6 +63,10 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
     $http.get('http://localhost:8080/todo').
             success(function (data) {
+                console.log("pre-clean");
+                console.log(data);
+                console.log("post-clean");
+//                var rawTodos = getAllTodos(data.todos);
                 data.todos = cleanTodos(data.todos);
                 initTodos(data.todos);
                 data.todos.sort(sortTodos);
@@ -355,6 +359,17 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             addDialog.showModal();
 
         });
+    }
+    
+    function getAllTodos(rawTodos){
+        var allTodos = [];
+        if(rawTodos){
+            rawTodos.forEach(function (element, index, array) {
+                allTodos.push(element);
+                allTodos = allTodos.concat(element.createdBy.todoList);
+            });
+        }
+        return allTodos;
     }
 
     function findUserByEmail(email) {
