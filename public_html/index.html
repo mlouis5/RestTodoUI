@@ -23,6 +23,9 @@ and open the template in the editor.
             <header>
                 <input type="text" placeholder="Search"/>
             </header>
+            
+            <div>{{todoModel| json}}</div>
+            
             <div class="todo-val-container">    
                 <input class="text-input" type="text" placeholder="Enter Text" ng-model="todoModel.value"/>
                 <div class="type-but todo-but" id="as-todo">As Todo</div>
@@ -30,7 +33,9 @@ and open the template in the editor.
                 <div class="type-but list-but">As List</div>
             </div>
 
-            <div>{{todoModel| json}}</div>
+            <div class="page-container">
+                <div class="page" ng-class="{'first-page': $index === 0}" id="page_{{($index + 1)}}" ng-repeat="page in pages" ng-click="pageChange(($index + 1))">{{page}}</div>
+            </div>
 
             <to-do></to-do>
 
@@ -69,10 +74,6 @@ and open the template in the editor.
         <div class="diaBtn cancel" id="closeCancel">Cancel</div>
     </dialog>
 
-
-
-
-
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery-ui.min.js"></script>
     <script type="text/javascript" src="js/libs/jquery-color-2.1.2.js"></script>
@@ -83,6 +84,7 @@ and open the template in the editor.
     <script type="text/javascript" src="js/libs/pickadate/picker.js"></script>
     <script type="text/javascript" src="js/libs/pickadate/picker.date.js"></script>
     <script type="text/javascript" src="js/libs/pickadate/picker.time.js"></script>
+    <script type="text/javascript" src="js/TodoSynchronizer.js"></script>
     <script type="text/javascript" src="js/TodoController.js"></script>
 </body>
 </html>

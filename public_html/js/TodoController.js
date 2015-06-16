@@ -52,7 +52,9 @@ app.directive('transformPin', function () {
 app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.todoDTO = {};
     $scope.todoModel = {};
+    $scope.pages = [];
 
+    var todoSynchronizer = undefined;
     var users = {};
     var dialog = {};
     dialog.window = document.getElementById('confirmDialog');
@@ -71,8 +73,15 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 initTodos(data.todos);
                 data.todos.sort(sortTodos);
 
-                $scope.todoDTO = data;
+                todoSynchronizer = new TodoSynchonizer(data.todos);
+                $scope.pages = todoSynchronizer.getPageNumbers();
+                
+                console.log('pages');
+                console.log($scope.pages);
+                $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+
                 console.log($scope.todoDTO);
+                
             });
 
     $scope.completed = function (index) {
@@ -168,7 +177,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
                     console.log('enc pin: ' + encryptedPin);
                     console.log('inp pin: ' + inputPin);
-                    
+
                     if (encryptedPin === inputPin) {
                         console.log('pins are valid');
                         $scope.todoModel.createdBy = user;
@@ -177,8 +186,9 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                         element.fadeOut(400).animate({
                             width: 0
                         }, 150);
-                        $('#pin-label').animate({
-                            width: '98.3%'
+                        $('#pin-label').text('Submit').animate({
+                            width: '99%',
+                            backgroundColor: 'blue'
                         }, 500).addClass('pin-transition').on('click', function () {
                             console.log('pin clicked');
                             console.log('posting:');
@@ -200,6 +210,18 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         } else {
             element.unbind('click');
         }
+    };
+
+    $scope.pageChange = function (index) {
+        $scope.todoDTO.todos = todoSynchronizer.getPage(index);
+        $('.page').each(function () {
+            $(this).animate({
+                backgroundColor: 'transparent'
+            }, 300);
+        });
+        $('#page_' + index).animate({
+            backgroundColor: '#02C03C'
+        }, 500);
     };
 
     function closeConfirmDialog() {
@@ -360,10 +382,10 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
         });
     }
-    
-    function getAllTodos(rawTodos){
+
+    function getAllTodos(rawTodos) {
         var allTodos = [];
-        if(rawTodos){
+        if (rawTodos) {
             rawTodos.forEach(function (element, index, array) {
                 allTodos.push(element);
                 allTodos = allTodos.concat(element.createdBy.todoList);
