@@ -309,10 +309,12 @@ line{
 .todoInput{
     position: relative;
     display: inline-block;
-    width: 350px;
+    width: 348px;
     height: 40px;
     float: right;
     font-size: 20px;
+    box-shadow: 0 1px 3px;
+    padding-left: 2px;
 }
 .pin-transition{
     transition: 1s;
@@ -341,6 +343,29 @@ line{
     line-height: 30px;
     border-radius: 50%;
     color: #000000;
+}
+
+.add-todo-label-top{
+    display: inline-block;
+    margin: auto;
+    width: 100%;
+    margin-bottom: 10px;
+    font-size: 30px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+}
+
+.todo-clear-btn{
+    display: block;
+    width: 100px;
+    height: 40px;
+    border: 2px solid black;
+    font-size: 18px;
+    text-align: center;
+    line-height: 40px;
+    float: right;
+    margin-right: -2px;
 }
 
 /***********ng-repeat animation*************/

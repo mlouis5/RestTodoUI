@@ -40,6 +40,7 @@ and open the template in the editor.
             <to-do></to-do>
 
             <dialog id="addTodoDialog">
+                <label class="add-todo-label-top">Add Todo</label>
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="value-label">Value:</label>
                     <input class="todoInput" id="todo-value" ng-model="todoModel.value"/>
@@ -64,6 +65,7 @@ and open the template in the editor.
                     <label class="add-todo-label" id="pin-label">Pin:</label>
                     <input class="todoInput" id="todo-pin" transform-pin ng-model="todoModel.createdBy.pin" ng-change="pinChanged()"/>
                 </div>
+                <div class="todo-clear-btn">Clear</div>
             </dialog>
         </div>
 

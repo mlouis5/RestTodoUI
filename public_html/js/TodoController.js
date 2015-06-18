@@ -100,7 +100,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                         $("#completed_" + index).animate({
                             backgroundColor: "#02C03C"
                         }, 500, function () {
-                            var temp = $scope.todoDTO.todos.splice(index, 1).pop();
+                            var temp = $scope.todoDTO.todos.splice(index, 0).pop();
                             $timeout(function () {
                                 $scope.todoDTO.todos.push(temp);
                                 $scope.todoDTO.todos.sort(sortTodos);
