@@ -34,7 +34,7 @@ function TodoSynchonizer(allTodos) {
         return false;
     };
 
-    var syncTodos = function (todoList) {
+    var syncTodos = function (todoList, shouldInit) {
         if (todoList) {
             if (todoList.length <= maxViewable) {
                 viewableTodos = todoList;
@@ -42,7 +42,9 @@ function TodoSynchonizer(allTodos) {
                 numPages = Math.ceil(todoList.length / maxViewable);
                 viewableTodos = todoList.slice(0, maxViewable);
             }
-            viewableTodos = initTodos(viewableTodos);
+            if (shouldInit) {
+                viewableTodos = initTodos(viewableTodos);
+            }
         }
     };
 
@@ -130,7 +132,7 @@ function TodoSynchonizer(allTodos) {
         return undefined;
     };
 
-    syncTodos(todos);
+    syncTodos(todos, true);
 
     ///////////PUBLIC METHODS////////////////
 
@@ -161,10 +163,54 @@ function TodoSynchonizer(allTodos) {
             if (todos) {
                 console.log(numPages);
                 for (var i = 0; i < numPages; i++) {
-                    pageNums.push((i+1));
+                    pageNums.push((i + 1));
                 }
             }
             return pageNums;
+        },
+        sortByKey: function (key) {
+            if (key && todos) {
+                todos.sort(function (a, b) {
+                    if (Object.prototype.hasOwnProperty.call(a, key)
+                            && Object.prototype.hasOwnProperty.call(b, key)) {
+                        var typeOf = typeof a[key];
+                        if (typeOf === 'string') {
+                            return a[key].localeCompare(b[key]);
+                        } else if (typeOf === 'number') {
+                            a[key] - b[key];
+                        }
+                    }
+                });
+                syncTodos(todos, false);
+            }
+            return getCurrentPage();
+        },
+        sortByValue: function (value) {
+            var bias = 0;
+            if (value && todos) {                
+                todos.sort(function (a, b) {
+                    for (var key in a) {
+                        if(a[key] === value){
+                            bias = -1;
+                        }
+                    }
+                    for (var key in b){
+                        if(b[key] === value){
+                            if(bias === -1){
+                                bias = 0;
+                            }else{
+                                bias = 1;
+                            }
+                        }
+                    }
+                    return bias;
+                });
+                syncTodos(todos, false);
+            }
+            return getCurrentPage();
+        },
+        search: function(value){
+            
         }
     };
 }

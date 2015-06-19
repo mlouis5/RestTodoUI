@@ -63,7 +63,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     initDialogCloseBtn();
     initAddTodoBtn();
 
-    $http.get('http://localhost:8080/todo').
+    $http.get('http://localhost:8090/todo').
             success(function (data) {
                 console.log("pre-clean");
                 console.log(data);
@@ -93,7 +93,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         }
 
         todo.isComplete = true;
-        $http.put('http://localhost:8080/todo/edit', todo).
+        $http.put('http://localhost:8090/todo/edit', todo).
                 success(function (data) {
                     todo = data;
                     if (todo !== undefined) {
@@ -123,7 +123,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             todo.priority = 'LOW';
         }
 
-        $http.put('http://localhost:8080/todo/edit', todo).
+        $http.put('http://localhost:8090/todo/edit', todo).
                 success(function (data) {
                     todo = data;
                     var bgColor = getPriorityBgColor(todo);
@@ -193,7 +193,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                             console.log('pin clicked');
                             console.log('posting:');
                             console.log($scope.todoModel);
-                            $http.post('http://localhost:8080/todo/add', $scope.todoModel).
+                            $http.post('http://localhost:8090/todo/add', $scope.todoModel).
                                     success(function (data) {
                                         var todo = data;
                                         if (todo !== undefined) {
@@ -358,7 +358,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             var todo = $scope.todoDTO.todos[dialog.windowIndex];
             todo.isRemoved = true;
 
-            $http.put('http://localhost:8080/todo/edit', todo).
+            $http.put('http://localhost:8090/todo/edit', todo).
                     success(function (data) {
                         todo = data;
                         if (todo !== undefined) {
