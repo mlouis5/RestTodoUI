@@ -74,12 +74,13 @@ app.directive('transformText', function () {
 
 app.controller("TodoController", function ($scope, $http, $timeout) {
 
-    var host = 'localhost';
     var todoApi = {};
-    todoApi.allTodos = 'http://' + host + ':8090/todo';
-    todoApi.edit = 'http://' + host + ':8090/todo/edit';
-    todoApi.add = 'http://' + host + ':8090/todo/add';
-    todoApi.email = 'http://' + host + ':8090/todo/email';
+    todoApi.host = 'localhost';
+    todoApi.port = '8090';
+    todoApi.allTodos = 'http://' + todoApi.host + ':' + todoApi.port + '/todo';
+    todoApi.edit = 'http://' + todoApi.host + ':' + todoApi.port + '/todo/edit';
+    todoApi.add = 'http://' + todoApi.host + ':' + todoApi.port + '/todo/add';
+    todoApi.email = 'http://' + todoApi.host + ':' + todoApi.port + '/todo/email';
 
     $scope.todoDTO = {};
     $scope.todoModel = {};
