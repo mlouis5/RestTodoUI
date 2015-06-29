@@ -12,7 +12,10 @@ and open the template in the editor.
     <span class="iconicfill-x remove" ng-click="remove($index)"></span>
     <hr class="hr-line">
     <div class="button-container">
-        <div class="send-to">Send To</div>
+        <div class="send-to-container">
+            <div class="send-to" data-index="{{$index}}"  ng-click="sendTo(todo, $index)">Send To</div>
+            <input class="send-to-email" id="send-to-email-{{$index}}" type="email"/>
+        </div>
         <div class="completed" ng-class="{'completed-tru': todo.isComplete}" id="completed_{{$index}}" ng-click="completed($index)">completed</div>
         <div class="edit">Edit</div>                    
     </div>

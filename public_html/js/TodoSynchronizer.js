@@ -36,15 +36,20 @@ function TodoSynchonizer(allTodos) {
 
     var syncTodos = function (todoList, shouldInit) {
         if (todoList) {
+            if (shouldInit) {
+                todoList = initTodos(todoList);
+//                viewableTodos = initTodos(viewableTodos);
+            }            
             if (todoList.length <= maxViewable) {
+                numPages = 1;
                 viewableTodos = todoList;
+                currPage = 1;
             } else {
                 numPages = Math.ceil(todoList.length / maxViewable);
                 viewableTodos = todoList.slice(0, maxViewable);
+                currPage = 1;
             }
-            if (shouldInit) {
-                viewableTodos = initTodos(viewableTodos);
-            }
+            
         }
     };
 
@@ -94,6 +99,23 @@ function TodoSynchonizer(allTodos) {
         var users = findUsers(todos);
         return assignUsers(users, todos);
     };
+
+    var removeTodo = function (id) {
+        var indexToRemove = undefined;
+        for (var i = 0; i < todos.length; i++) {
+            var todo = todos[i];
+            if (todo) {
+                if (todo.id === id) {
+                    indexToRemove = i;
+                    break;
+                }
+            }
+        }
+        if (indexToRemove !== undefined) {
+            todos.splice(indexToRemove, 1);
+            syncTodos(todos, false);
+        }
+    };
     /**
      * find all users and add to map.
      * @param {Object} todos
@@ -120,6 +142,10 @@ function TodoSynchonizer(allTodos) {
      */
     var assignUsers = function (users, todos) {
         if (users && todos) {
+            console.log('all users:');
+            console.log(users);
+            console.log('all todos:');
+            console.log(todos);
             todos.forEach(function (element, index, array) {
                 var createdBy = element.createdBy;
                 if (Math.round(createdBy) === createdBy) {
@@ -132,13 +158,83 @@ function TodoSynchonizer(allTodos) {
         return undefined;
     };
 
+    /**
+     * Sorting based on points system. subtract point a from point b
+     * @param {type} a
+     * @param {type} b
+     * @return {Number}
+     */
+    var sortTodos = function (a, b) {
+        var aPoints = prioritizeTodo(a);
+        var bPoints = prioritizeTodo(b);
+        return aPoints - bPoints;
+    };
+
+    /**
+     * Assign points to the given todo based on the factors below:
+     * 1. the given todo starts with 5 points
+     * 2. subtract 2 points is priority is high, 1 if med
+     * 3. subtract 1 point if not yet completed.
+     * @param {type} todo
+     * @return {Number}
+     */
+    var prioritizeTodo = function (todo) {
+        var points = 5;
+        if (!todo.isComplete) {
+            if (todo.priority === 'HIGH') {
+                points -= 5;
+            } else if (todo.priority === 'MED') {
+                points -= 4;
+            } else if (todo.priority === 'LOW') {
+                points -= 3;
+            }
+        }
+        return points;
+    };
+
     syncTodos(todos, true);
 
     ///////////PUBLIC METHODS////////////////
 
     return {
+        removeTodo: function (todoId) {
+            removeTodo(todoId);
+        },
+        addTodo: function (todo, shouldSort) {
+            if (todo) {
+                todos.push(todo);
+                if (shouldSort) {
+                    todos.sort(sortTodos);
+                }
+                syncTodos(todos, false);
+            }
+        },
+        findUserByEmail: function (email) {
+            var user = undefined;
+            if (email) {
+                email = email.trim();
+                console.log(todos);
+                todos.forEach(function (element, index, array) {
+                    console.log(element);
+                    console.log(index);
+                    if (element.createdBy.email.toUpperCase() === email.toUpperCase()) {
+                        user = element.createdBy;
+                    }
+                });
+            }
+            return user;
+        },
         getCurrentPage: function () {
             return viewableTodos;
+        },
+        getCurrentPageNum: function () {
+            return currPage;
+        },
+        getTodoCurrentPage: function (index) {
+            if (index >= 0 && index < viewableTodos.length) {
+                return viewableTodos[index];
+            }
+            return undefined;
         },
         nextPage: function () {
             return next();
@@ -156,17 +252,22 @@ function TodoSynchonizer(allTodos) {
             if (!isValidPage(p)) {
                 return undefined;
             }
-            return page(p);
+            currPage = p;
+            return page(currPage);
         },
         getPageNumbers: function () {
             var pageNums = [];
             if (todos) {
-                console.log(numPages);
                 for (var i = 0; i < numPages; i++) {
                     pageNums.push((i + 1));
                 }
             }
             return pageNums;
+        },
+        defaultSort: function () {
+            todos.sort(sortTodos);
+            syncTodos(todos, false);
+            return this.getCurrentPage();
         },
         sortByKey: function (key) {
             if (key && todos) {
@@ -187,18 +288,18 @@ function TodoSynchonizer(allTodos) {
         },
         sortByValue: function (value) {
             var bias = 0;
-            if (value && todos) {                
+            if (value && todos) {
                 todos.sort(function (a, b) {
                     for (var key in a) {
-                        if(a[key] === value){
+                        if (a[key] === value) {
                             bias = -1;
                         }
                     }
-                    for (var key in b){
-                        if(b[key] === value){
-                            if(bias === -1){
+                    for (var key in b) {
+                        if (b[key] === value) {
+                            if (bias === -1) {
                                 bias = 0;
-                            }else{
+                            } else {
                                 bias = 1;
                             }
                         }
@@ -209,8 +310,8 @@ function TodoSynchonizer(allTodos) {
             }
             return getCurrentPage();
         },
-        search: function(value){
-            
+        search: function (value) {
+
         }
     };
 }

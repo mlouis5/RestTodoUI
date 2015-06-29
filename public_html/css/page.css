@@ -19,13 +19,50 @@ and open the template in the editor.
 }
 html{
     overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 body{
+    margin: 0;
+    padding: 0;
     font-family: 'Walkway Black', sans-serif;
     background: linear-gradient(90deg, #464A4D, #303435);
     overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-body::-webkit-scrollbar { width: 0 !important }
+
+body::-webkit-scrollbar{
+    width: 0;
+    outline: none;
+}
+body::-webkit-scrollbar-button{
+    width: 0;
+    outline: none;
+}
+body::-webkit-scrollbar-track{
+    width: 0;
+    outline: none;
+}
+body::-webkit-scrollbar-track-piece{
+    width: 0;
+    outline: none;
+}
+body::-webkit-scrollbar-thumb{
+    width: 0;
+    outline: none;
+}
+body::-webkit-scrollbar-corner{
+    width: 0;
+    outline: none;
+}
+body::-webkit-resizer{
+    width: 0;
+    outline: none;
+}
+
 .container{
     position: relative;
     margin: auto;
@@ -51,7 +88,7 @@ header{
 .text-input{
     position: relative;
     margin: 20px;
-    width: 50%;
+    width: 75%;
     height: 30px;
     padding: 5px;
     border: 2px solid #cccccc;
@@ -68,6 +105,7 @@ header{
     text-align: center;
     line-height: 30px;
     color: #3f3f3f;
+    cursor: pointer;
 }
 
 polygon{
@@ -76,8 +114,8 @@ polygon{
     stroke-width:3;
 }
 line{
-     stroke:rgb(244,216,113);
-     stroke-width: 3;
+    stroke:rgb(244,216,113);
+    stroke-width: 3;
 }
 
 .todo{
@@ -87,7 +125,7 @@ line{
     color: #0f0f0f;
     position: relative;
     background-color: #ffffff;
-    
+
     box-shadow: 0 1px 3px;
 
     -webkit-border-radius: 3px;
@@ -117,6 +155,7 @@ line{
     right: 40%;
     text-align: center;
     background-color: #02C03C;
+    cursor: pointer;
 
     -webkit-border-bottom-right-radius: 5px;
     -moz-border-radius-bottomright: 5px;
@@ -154,10 +193,11 @@ line{
     right: 5px;
     font-size: 35px;
     color: #F47771;
+    cursor: pointer;
 }
 /* iconicfill */
 [class*="iconicfill-"]:before {
-  font-family: 'IconicFill', sans-serif;
+    font-family: 'IconicFill', sans-serif;
 }
 .hr-line{
     margin-top: 30px;
@@ -183,14 +223,23 @@ line{
     left: 0;
     bottom: 0;
     height: 50px;
-    width: 40%;
+    width: 62%;
     line-height: 50px;
     margin-top: 40px;
+    /*border: 1px solid black;*/
+}
+
+.send-to-container{
+    display: inline-block;
+    width: auto; /*380px;*/
+    height: 42px;
+    font-size: 0;
+    /*border: 1px solid orange;*/
 }
 
 .send-to, .edit, .completed{
     display: inline-block;
-    width: 30.24%;
+    width: 85px;
     text-align: center;
     height: 35px;
     line-height: 35px;
@@ -199,6 +248,7 @@ line{
     font-weight: 300;
     color: #ffffff;
     cursor: pointer;
+    position: relative;
 }
 .send-to{
     background-color: #71BDF4;
@@ -212,6 +262,17 @@ line{
 .completed-tru{
     background-color: #02C03C;
 }
+
+.send-to-email{    
+    width: 0;
+    outline: 0;
+    height: 35px;
+    font-size: 16px;
+    display: none;
+    opacity: 0;
+    vertical-align: top;
+}
+
 .by{
     display: inline-block;
     position: absolute;
@@ -219,13 +280,13 @@ line{
     bottom: 5px;
     height: 30px;
     line-height:35px;
-    width: 45%;
-    /*border: 1px solid white;*/
+    width: 30%;
+    /*border: 1px solid blue;*/
     vertical-align: top;
 }
 .by-input{
     /*border: 1px solid red;*/
-    width: 93%;
+    width: 80%;
     display: inline-block;
     height: 92%;
 }
@@ -315,12 +376,46 @@ line{
     font-size: 20px;
     box-shadow: 0 1px 3px;
     padding-left: 2px;
+    outline: 0;
+    transition: .5s;
+}
+.todoInput:focus{
+    transition: .5s;
+    border: 2px solid #80CCFF;
+}
+select.todoInput {
+    width: 355px;
+    border: 2px solid #F47771;
+    outline: 0;
+    transition: .5s;
+}
+textarea.todoInput{
+    display: inline-block;
+    height: 80px;
+    resize: none;
+}
+#value-input{
+    height: 85px; 
+}
+textarea::-webkit-scrollbar {
+    width: 6px;
+}
+ 
+textarea::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
+    border-radius: 4px;
+}
+ 
+textarea::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
 }
 .pin-transition{
     transition: 1s;
     text-align: center;
     width: 98.3%;
     opacity: 1;
+    cursor: pointer;
 }
 
 .page-container{
@@ -343,6 +438,11 @@ line{
     line-height: 30px;
     border-radius: 50%;
     color: #000000;
+    cursor: pointer;
+}
+.page-transition{
+    transition: background-color 0.5s ease;
+    background-color: #02C03C;
 }
 
 .add-todo-label-top{
@@ -366,22 +466,23 @@ line{
     line-height: 40px;
     float: right;
     margin-right: -2px;
+    cursor: pointer;
 }
 
 /***********ng-repeat animation*************/
 .todo.ng-leave,
 .todo.ng-enter,
 .todo.ng-move {
-  transition: 1s;
-  opacity: 0;
-  /*height: 5px;*/
-  width: 0%;
+    transition: 1s;
+    opacity: 0;
+    /*height: 5px;*/
+    width: 0%;
 }
 .todo.ng-enter.todo.ng-enter-active,
 .todo.ng-move.todo.ng-move-active {
-  opacity: 1;
-  /*height: 130px;*/
-  width: 95%;
+    opacity: 1;
+    /*height: 130px;*/
+    width: 95%;
 }
 .todo.ng-leave.todo.ng-leave-active{
     transition: 1s;
@@ -392,12 +493,12 @@ line{
 .todo.ng-enter-stagger,
 .todo.ng-enter-stagger
 {
-  /* 50ms between each item being animated after the other */
-  -webkit-transition-delay:50ms;
-  transition-delay:50ms;
+    /* 50ms between each item being animated after the other */
+    -webkit-transition-delay:50ms;
+    transition-delay:50ms;
 
-  /* this is required here to prevent any CSS inheritance issues */
-  -webkit-transition-duration:0;
-  transition-duration:0;
+    /* this is required here to prevent any CSS inheritance issues */
+    -webkit-transition-duration:0;
+    transition-duration:0;
 }
 /***********end ng-repeat animation*************/

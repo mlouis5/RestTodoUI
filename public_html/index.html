@@ -13,24 +13,20 @@ and open the template in the editor.
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
-        <link rel="stylesheet" type="text/css" href="css/default.css" />
-        <link rel="stylesheet" type="text/css" href="css/default.date.css" />
-        <link rel="stylesheet" type="text/css" href="css/default.time.css" />
         <link rel="stylesheet" type="text/css" href="css/page.css" />
+
     </head>
     <body ng-app="myapp">
-        <div class="container" ng-controller="TodoController">
+        <div class="container" ng-controller="TodoController" >
             <header>
                 <input type="text" placeholder="Search"/>
             </header>
-            
+
             <div>{{todoModel| json}}</div>
-            
+
             <div class="todo-val-container">    
                 <input class="text-input" type="text" placeholder="Enter Text" ng-model="todoModel.value"/>
-                <div class="type-but todo-but" id="as-todo">As Todo</div>
-                <div class="type-but note-but">As Note</div>
-                <div class="type-but list-but">As List</div>
+                <div class="type-but todo-but" id="add-todo">Add Todo</div>
             </div>
 
             <div class="page-container">
@@ -41,22 +37,40 @@ and open the template in the editor.
 
             <dialog id="addTodoDialog">
                 <label class="add-todo-label-top">Add Todo</label>
-                <div class="todo-label-input-con">
+                <div class="todo-label-input-con" id="value-input">
                     <label class="add-todo-label" id="value-label">Value:</label>
-                    <input class="todoInput" id="todo-value" ng-model="todoModel.value"/>
+                    <!--<input class="todoInput" id="todo-value" ng-model="todoModel.value"/>-->
+                    <textarea class="todoInput" ROWS="5" COLS="50" ng-model="todoModel.value" transform-text>
+                    </textarea>
                 </div>
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="priority-label">Priority:</label>
-                    <input class="todoInput" id="todo-priority" ng-model="todoModel.priority"/>
+                    <select class="todoInput" id="todo-priority" ng-model="todoModel.priority">
+                        <option selected value="LOW">LOW</option>
+                        <option value="MED">MED</option>
+                        <option value="HIGH">HIGH</option>
+                    </select>
                 </div>
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="recurrence-label">Recurrence:</label>
-                    <input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>
+                    <!--<input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>-->
+                    <select class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence">
+                        <option value='One-Time' selected>One-Time</option>
+                        <option value='Daily'>Daily</option>
+                        <option value='Weekly'>Weekly</option>
+                        <option value='Bi-Weekly'>Bi-Weekly</option>
+                        <option value='Semi-Monthly'>Semi-Monthly</option>
+                        <option value='Monthly'>Monthly</option>
+                        <option value='quarterly'>quarterly</option>
+                        <option value='Semi-Annually'>Semi-Annually</option>
+                        <option value='Annually'>Annually</option>
+                    </select>
                 </div>
-                <div class="todo-label-input-con">
-                    <label class="add-todo-label" id="due-by-label">Due By:</label>
-                    <input class="todoInput" id="todo-due-by" transform-date ng-model="todoModel.dueBy"/>
-                </div>
+                <!--                <div class="todo-label-input-con">
+                                    <label class="add-todo-label" id="due-by-label">Due By:</label>
+                                    <input class="todoInput" id="todo-due-by" transform-date ng-model="todoModel.dueBy"/>
+                                    <input class="todoInput" id="todo-due-by" />
+                                </div>-->
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="email-label">Email:</label>
                     <input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>
@@ -76,16 +90,13 @@ and open the template in the editor.
         <div class="diaBtn cancel" id="closeCancel">Cancel</div>
     </dialog>
 
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script type="text/javascript" src="js/libs/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="js/libs/jquery-color-2.1.2.js"></script>
+    <script type="text/javascript" src="js/libs/jquery/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="js/libs/jquery/jquery-color-2.1.2.js"></script>
     <script type="text/javascript" src="js/libs/md5/md5.js"></script>
     <script type="text/javascript" src="js/libs/moment/moment.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-animate.js"></script>    
-    <script type="text/javascript" src="js/libs/pickadate/picker.js"></script>
-    <script type="text/javascript" src="js/libs/pickadate/picker.date.js"></script>
-    <script type="text/javascript" src="js/libs/pickadate/picker.time.js"></script>
     <script type="text/javascript" src="js/TodoSynchronizer.js"></script>
     <script type="text/javascript" src="js/TodoController.js"></script>
 </body>

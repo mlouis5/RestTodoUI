@@ -48,72 +48,95 @@ app.directive('transformPin', function () {
         }
     };
 });
+app.directive('transformText', function () {
+    return{
+        require: 'ngModel',
+        link: function (scope, element, attrs, ngModel) {
+            if (ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    if (value.indexOf("\n") > -1) {
+                        value = value.replace(/\n/g, ", ");
+                        scope.todoModel.type = 'List';
+                        return value;
+                    } else {
+                        if (value.split(" ").length >= 13) {
+                            scope.todoModel.type = 'Note';
+                        } else {
+                            scope.todoModel.type = 'Todo';
+                        }
+                        return value;
+                    }
+                });
+            }
+        }
+    };
+});
 
 app.controller("TodoController", function ($scope, $http, $timeout) {
+
+    var host = 'localhost';
+    var todoApi = {};
+    todoApi.allTodos = 'http://' + host + ':8090/todo';
+    todoApi.edit = 'http://' + host + ':8090/todo/edit';
+    todoApi.add = 'http://' + host + ':8090/todo/add';
+    todoApi.email = 'http://' + host + ':8090/todo/email';
+
     $scope.todoDTO = {};
     $scope.todoModel = {};
     $scope.pages = [];
 
     var todoSynchronizer = undefined;
     var users = {};
-    var dialog = {};
-    dialog.window = document.getElementById('confirmDialog');
+
+    var dialogs = {};
+    dialogs.closeDialog = {};
+    dialogs.closeDialog = {};
+    dialogs.closeDialog.window = document.getElementById('confirmDialog');
 
     initTodoModel($scope.todoModel);
     initDialogCloseBtn();
     initAddTodoBtn();
 
-    $http.get('http://localhost:8090/todo').
+    $http.get(todoApi.allTodos).
             success(function (data) {
                 console.log("pre-clean");
                 console.log(data);
-                console.log("post-clean");
-//                var rawTodos = getAllTodos(data.todos);
-                data.todos = cleanTodos(data.todos);
-                initTodos(data.todos);
-                data.todos.sort(sortTodos);
-
                 todoSynchronizer = new TodoSynchonizer(data.todos);
                 $scope.pages = todoSynchronizer.getPageNumbers();
-                
+
                 console.log('pages');
                 console.log($scope.pages);
-                $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+                $scope.todoDTO.todos = todoSynchronizer.defaultSort();
 
                 console.log($scope.todoDTO);
-                
             });
 
     $scope.completed = function (index) {
-        var todos = $scope.todoDTO;
-        var todo = $scope.todoDTO.todos[index];
-
-        if (todo.isComplete) {
+        var todo = todoSynchronizer.getTodoCurrentPage(index);
+        if (todo === undefined || todo.isComplete) {
             return;
         }
-
         todo.isComplete = true;
-        $http.put('http://localhost:8090/todo/edit', todo).
+        $http.put(todoApi.edit, todo).
                 success(function (data) {
                     todo = data;
-                    if (todo !== undefined) {
+                    if (todo) {
                         $("#completed_" + index).animate({
                             backgroundColor: "#02C03C"
                         }, 500, function () {
-                            var temp = $scope.todoDTO.todos.splice(index, 0).pop();
                             $timeout(function () {
-                                $scope.todoDTO.todos.push(temp);
-                                $scope.todoDTO.todos.sort(sortTodos);
+                                $scope.todoDTO.todos = todoSynchronizer.defaultSort();
                             });
-                            console.log($scope.todoDTO.todos);
                         });
                     }
-//                console.log($scope.todoDTO);
                 });
     };
 
     $scope.changePriority = function (index) {
-        var todo = $scope.todoDTO.todos[index];
+        var todo = todoSynchronizer.getTodoCurrentPage(index);
+        if (todo === undefined) {
+            return;
+        }
         var prio = todo.priority;
         if (prio === 'LOW') {
             todo.priority = 'MED';
@@ -123,23 +146,29 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             todo.priority = 'LOW';
         }
 
-        $http.put('http://localhost:8090/todo/edit', todo).
+        $http.put(todoApi.edit, todo).
                 success(function (data) {
                     todo = data;
                     var bgColor = getPriorityBgColor(todo);
                     if (todo !== undefined) {
                         $("#priority_" + index).animate({
                             backgroundColor: bgColor
-                        }, 500);
+                        }, 500, function () {
+                            $scope.todoDTO.todos = todoSynchronizer.defaultSort();
+                            $scope.$apply();
+                            var pageNum = todoSynchronizer.getCurrentPageNum();
+                            $scope.pageChange(pageNum);
+                        });
                     }
                 });
     };
 
     $scope.remove = function (index) {
-        dialog.windowIndex = index;
-        dialog.isOpen = true;
-        dialog.window.addEventListener('close', function (e) {
-            $(dialog.window).css({
+        dialogs.closeDialog.windowIndex = index;
+        dialogs.closeDialog.isOpen = true;
+        dialogs.closeDialog.todo = todoSynchronizer.getTodoCurrentPage(index);
+        dialogs.closeDialog.window.addEventListener('close', function (e) {
+            $(dialogs.closeDialog.window).css({
                 width: '10px',
                 height: '10px'
             }).children().css({
@@ -147,10 +176,10 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             });
             console.log('closing...');
             console.log(e);
-            dialog.isOpen = false;
+            dialogs.closeDialog.isOpen = false;
         });
-        dialog.window.showModal();
-        $(dialog.window).animate({
+        dialogs.closeDialog.window.showModal();
+        $(dialogs.closeDialog.window).animate({
             width: '400px',
             height: '125px',
             opacity: 1
@@ -169,7 +198,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             console.log('email: ' + email);
             if (email && email.indexOf('@') > 0) {
                 console.log('email is valid');
-                var user = findUserByEmail(email);
+                var user = todoSynchronizer.findUserByEmail(email);
                 if (user !== undefined) {
                     console.log('user is valid');
                     var encryptedPin = user.pin;
@@ -188,19 +217,23 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                         }, 150);
                         $('#pin-label').text('Submit').animate({
                             width: '99%',
-                            backgroundColor: 'blue'
+                            color: '#f0f0f0',
+                            backgroundColor: '#02C03C'
                         }, 500).addClass('pin-transition').on('click', function () {
                             console.log('pin clicked');
                             console.log('posting:');
                             console.log($scope.todoModel);
-                            $http.post('http://localhost:8090/todo/add', $scope.todoModel).
+                            $http.post(todoApi.add, $scope.todoModel).
                                     success(function (data) {
                                         var todo = data;
                                         if (todo !== undefined) {
                                             console.log('Added todo successfully');
                                             console.log(todo);
-                                            $scope.todoDTO.todos.push(todo);
-                                            $scope.todoDTO.todos.sort(sortTodos);
+                                            todoSynchronizer.addTodo(todo, true);
+                                            $scope.pages = todoSynchronizer.getPageNumbers();
+                                            $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+                                            var pNum = todoSynchronizer.getCurrentPageNum();
+                                            $("#page_" + pNum).addClass('first-page');
                                         }
                                     });
                         });
@@ -215,34 +248,92 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.pageChange = function (index) {
         $scope.todoDTO.todos = todoSynchronizer.getPage(index);
         $('.page').each(function () {
+            $(this).removeClass('page-transition');
             $(this).animate({
                 backgroundColor: 'transparent'
             }, 300);
         });
+        console.log($('#page_' + index));
         $('#page_' + index).animate({
             backgroundColor: '#02C03C'
         }, 500);
     };
 
+    $scope.sendTo = function (todo, emailIdIndex) {
+        console.log(todo);
+        console.log(emailIdIndex);
+        var emailInput = $('#send-to-email-' + emailIdIndex);
+
+        var width = parseInt(emailInput.css('width'));
+        console.log(width);
+        if (width === 0) {
+            emailInput.css({
+                display: 'inline-block'
+            }).animate({
+                width: '282px',
+                opacity: 1
+            }, 550);
+        } else if (width > 0) {
+            var text = emailInput.val();
+            console.log('text before if: ' + text);
+            if (text) {
+                console.log(text);
+
+                text = 'samira.f.davis@gmail.com';
+                todo.sendTo = text;
+
+                $http.put(todoApi.email, todo).
+                        success(function (data) {
+                            var todo = data;
+                            if (todo !== undefined) {
+                                console.log('emailed todo successfully');
+                                console.log(todo);
+//                                todoSynchronizer.addTodo(todo, true);
+//                                $scope.pages = todoSynchronizer.getPageNumbers();
+//                                $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+//                                var pNum = todoSynchronizer.getCurrentPageNum();
+//                                $("#page_" + pNum).addClass('first-page');
+                            }
+                        });
+
+            } else {
+                emailInput.animate({
+                    width: 0,
+                    opacity: 0
+                }, 550, function () {
+                    $(this).css({
+                        display: 'none'
+                    });
+                });
+            }
+        }
+
+    };
+
     function closeConfirmDialog() {
-        $(dialog.window).animate({
+        $(dialogs.closeDialog.window).animate({
             width: '10px',
             height: '10px',
             opacity: 0
         }, 500);
-        $("#todo_" + dialog.windowIndex).delay(400).animate({
+        $("#todo_" + dialogs.closeDialog.windowIndex).delay(400).animate({
             width: 0,
             height: 0,
             margin: 0,
             opacity: 0,
             display: 'none'
         }, 1000, function () {
-            dialog.windowIndex = undefined;
-            dialog.window.close();
-            dialog.isOpen = false;
+            dialogs.closeDialog.windowIndex = undefined;
+            dialogs.closeDialog.window.close();
+            dialogs.closeDialog.isOpen = false;
 
+            todoSynchronizer.removeTodo(dialogs.closeDialog.todo.id);
             $timeout(function () {
-                $scope.todoDTO.todos.splice(dialog.windowIndex, 0);
+                $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+                $scope.pages = todoSynchronizer.getPageNumbers();
+                dialogs.closeDialog.todo = undefined;
+                var pNum = todoSynchronizer.getCurrentPageNum();
+                $("#page_" + pNum).addClass('first-page');
             });
         });
     }
@@ -259,106 +350,13 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         }
         return bgColor;
     }
-    /**
-     * Initialize todo list, add createdBy to each one.
-     * @param {type} todos
-     * @return {undefined}
-     */
-    function initTodos(todos) {
-        if (todos === undefined) {
-            return;
-        }
-        todos.forEach(findUsers);
-        todos.forEach(assignUsers);
-    }
-    /**
-     * find all users and add to map.
-     * @param {type} element
-     * @param {type} index
-     * @param {type} array
-     * @return {undefined}
-     */
-    function findUsers(element, index, array) {
-        var createdBy = element.createdBy;
-        if (typeof createdBy === 'object') {
-            users[createdBy['@id'].toString()] = createdBy;
-        }
-    }
-    /**
-     * for a given todo, add it corresponding user.
-     * @param {type} element
-     * @param {type} index
-     * @param {type} array
-     * @return {undefined}
-     */
-    function assignUsers(element, index, array) {
-        var createdBy = element.createdBy;
-        if (Math.round(createdBy) === createdBy) {
-            var user = users[createdBy.toString()];
-            element.createdBy = user;
-        }
-    }
-
-    /**
-     * Removes any element in the given array that isn't an object type.
-     * @param {type} todos
-     * @return {unresolved}
-     */
-    function cleanTodos(todos) {
-        var toRemove = [];
-        todos.forEach(function (element, index, array) {
-            if (typeof element !== 'object') {
-                toRemove.push(element);
-            }
-        });
-        toRemove.forEach(function (element, index, array) {
-            var index = todos.indexOf(element);
-            todos.splice(index, 1);
-        });
-        return todos;
-    }
-
-    /**
-     * Sorting based on points system. subtract point a from point b
-     * @param {type} a
-     * @param {type} b
-     * @return {Number}
-     */
-    function sortTodos(a, b) {
-        var aPoints = prioritizeTodo(a);
-        var bPoints = prioritizeTodo(b);
-        return aPoints - bPoints;
-    }
-
-    /**
-     * Assign points to the given todo based on the factors below:
-     * 1. the given todo starts with 5 points
-     * 2. subtract 2 points is priority is high, 1 if med
-     * 3. subtract 1 point if not yet completed.
-     * @param {type} todo
-     * @return {Number}
-     */
-    function prioritizeTodo(todo) {
-        var points = 5;
-        if (todo.priority === 'HIGH') {
-            points -= 2;
-        } else if (todo.priority === 'MED') {
-            points -= 1;
-        }
-        if (!todo.isComplete) {
-            points -= 1;
-        }
-        return points;
-    }
 
     function initDialogCloseBtn() {
         $('#closeConfirm').on("click", function () {
-            console.log(dialog.window);
-            console.log(dialog.window.dialogArguments);
-            var todo = $scope.todoDTO.todos[dialog.windowIndex];
+            var todo = $scope.todoDTO.todos[dialogs.closeDialog.windowIndex];
             todo.isRemoved = true;
 
-            $http.put('http://localhost:8090/todo/edit', todo).
+            $http.put(todoApi.edit, todo).
                     success(function (data) {
                         todo = data;
                         if (todo !== undefined) {
@@ -373,38 +371,24 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     ;
 
     function initAddTodoBtn() {
-        var $input = $('#todo-due-by').pickadate();
-
-        $("#as-todo").on('click', function () {
+        $("#add-todo").on('click', function () {
             initTodoModel($scope.todoModel);
-            var addDialog = document.getElementById('addTodoDialog');
-            addDialog.showModal();
-
+            dialogs.addDialog = {};
+            dialogs.addDialog.window = document.getElementById('addTodoDialog');
+            dialogs.addDialog.window.showModal();
         });
     }
 
-    function getAllTodos(rawTodos) {
-        var allTodos = [];
-        if (rawTodos) {
-            rawTodos.forEach(function (element, index, array) {
-                allTodos.push(element);
-                allTodos = allTodos.concat(element.createdBy.todoList);
-            });
-        }
-        return allTodos;
-    }
+    function initSendToButton() {
+        $('.send-to').on('click', function () {
+            var index = $(this).attr('data-index');
+            var emailInput = $('#send-to-email-' + index);
+            var width = emailInput.css('width');
+            console.log(width);
+            if (width > 0) {
 
-    function findUserByEmail(email) {
-        var elem = undefined;
-        if (email) {
-            email = email.trim();
-            $scope.todoDTO.todos.forEach(function (element, index, array) {
-                if (element.createdBy.email.toUpperCase() === email.toUpperCase()) {
-                    elem = element.createdBy;
-                }
-            });
-        }
-        return elem;
+            }
+        });
     }
 
     function initTodoModel(model) {
@@ -421,7 +405,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         model.priority = 'LOW';
         model.recurrence = 'One-Time';
         model.type = 'Todo';
-        model.value = undefined;
+        model.sendTo = undefined;
+//        model.value = undefined;
     }
 });
 
