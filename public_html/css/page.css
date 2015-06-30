@@ -391,11 +391,11 @@ select.todoInput {
 }
 textarea.todoInput{
     display: inline-block;
-    height: 80px;
+    height: 160px;
     resize: none;
 }
 #value-input{
-    height: 85px; 
+    height: 165px; 
 }
 textarea::-webkit-scrollbar {
     width: 6px;

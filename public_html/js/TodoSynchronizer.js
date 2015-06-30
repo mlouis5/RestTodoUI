@@ -213,16 +213,28 @@ function TodoSynchonizer(allTodos) {
             var user = undefined;
             if (email) {
                 email = email.trim();
-                console.log(todos);
+//                console.log(todos);
                 todos.forEach(function (element, index, array) {
-                    console.log(element);
-                    console.log(index);
+//                    console.log(element);
+//                    console.log(index);
                     if (element.createdBy.email.toUpperCase() === email.toUpperCase()) {
                         user = element.createdBy;
                     }
                 });
             }
             return user;
+        },
+        getAllUserEmails: function(){
+            var allUsers = [];
+            todos.forEach(function(element, index, array){
+                var user = element.createdBy;
+                if(user.email){
+                    if(allUsers.indexOf(user.email) === -1){
+                        allUsers.push(user.email);
+                    }
+                }
+            });
+            return allUsers;
         },
         getCurrentPage: function () {
             return viewableTodos;

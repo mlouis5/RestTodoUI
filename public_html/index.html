@@ -73,7 +73,10 @@ and open the template in the editor.
                                 </div>-->
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="email-label">Email:</label>
-                    <input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>
+                    <!--<input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>-->
+                    <select class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" required="true" ng-change="emailChanged()" ng-options="email for email in emails">
+                        <option value="" selected hidden></option>
+                    </select>
                 </div>
                 <div class="todo-label-input-con">
                     <label class="add-todo-label" id="pin-label">Pin:</label>

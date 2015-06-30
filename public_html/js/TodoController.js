@@ -87,7 +87,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.pages = [];
 
     var todoSynchronizer = undefined;
-    var users = {};
+    $scope.emails = [];
 
     var dialogs = {};
     dialogs.closeDialog = {};
@@ -104,6 +104,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 console.log(data);
                 todoSynchronizer = new TodoSynchonizer(data.todos);
                 $scope.pages = todoSynchronizer.getPageNumbers();
+                $scope.emails = todoSynchronizer.getAllUserEmails();
+                
 
                 console.log('pages');
                 console.log($scope.pages);
@@ -165,41 +167,23 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     };
 
     $scope.remove = function (index) {
-        dialogs.closeDialog.windowIndex = index;
-        dialogs.closeDialog.isOpen = true;
+        dialogs.closeDialog.windowIndex = index;        
         dialogs.closeDialog.todo = todoSynchronizer.getTodoCurrentPage(index);
-        dialogs.closeDialog.window.addEventListener('close', function (e) {
-            $(dialogs.closeDialog.window).css({
-                width: '10px',
-                height: '10px'
-            }).children().css({
-                opacity: 0
-            });
-            console.log('closing...');
-            console.log(e);
-            dialogs.closeDialog.isOpen = false;
-        });
-        dialogs.closeDialog.window.showModal();
-        $(dialogs.closeDialog.window).animate({
-            width: '400px',
-            height: '125px',
-            opacity: 1
-        }, 500).children().css({
-            opacity: 0
-        }).animate({
-            opacity: 1
-        }, 1500);
+        openDialog(dialogs.closeDialog, 400, 125);
     };
 
     $scope.pinChanged = function () {
         var element = $('#todo-pin');
         var pin = element.val();
         if (pin.length === 4) {
-            var email = $('#todo-email').val();
+            var email = $scope.todoModel.createdBy.email;//$('#todo-email').val();
             console.log('email: ' + email);
             if (email && email.indexOf('@') > 0) {
                 console.log('email is valid');
+                console.log(email);
                 var user = todoSynchronizer.findUserByEmail(email);
+                console.log('user');
+                console.log(user);
                 if (user !== undefined) {
                     console.log('user is valid');
                     var encryptedPin = user.pin;
@@ -234,7 +218,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                                             $scope.pages = todoSynchronizer.getPageNumbers();
                                             $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
                                             var pNum = todoSynchronizer.getCurrentPageNum();
-                                            $("#page_" + pNum).addClass('first-page');
+//                                            $("#page_" + pNum).addClass('first-page');
+                                            dialogs.addDialog.window
                                         }
                                     });
                         });
@@ -408,6 +393,35 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         model.type = 'Todo';
         model.sendTo = undefined;
 //        model.value = undefined;
+    }
+    
+    function openDialog(dialog, width, height){
+        if(dialog && width && height){
+            var windw = dialog.window;
+            var widStr = width + 'px';
+            var hgtStr = height + 'px';
+            windw.addEventListener('close', function(e){
+                $(windw).css({
+                    width: '10px',
+                    height: '10px'
+                }).children().css({
+                    opacity: 0
+                });
+                dialog.isOpen = false;
+            });
+            windw.showModal();
+            $(windw).animate({
+                width: widStr,
+                height: hgtStr,
+                opacity: 1
+            }, 500).children().css({
+                opacity: 0
+            }).animate({
+                opacity: 1
+            }, 1500, function(){
+                dialog.isOpen = true;
+            });
+        }
     }
 });
 
