@@ -502,3 +502,10 @@ textarea::-webkit-scrollbar-thumb {
     transition-duration:0;
 }
 /***********end ng-repeat animation*************/
+
+dialog{
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

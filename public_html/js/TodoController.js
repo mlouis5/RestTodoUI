@@ -94,6 +94,9 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     dialogs.closeDialog = {};
     dialogs.closeDialog.window = document.getElementById('confirmDialog');
 
+    dialogs.addDialog = {};
+    dialogs.addDialog.window = document.getElementById('addTodoDialog');
+
     initTodoModel($scope.todoModel);
     initDialogCloseBtn();
     initAddTodoBtn();
@@ -105,7 +108,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 todoSynchronizer = new TodoSynchonizer(data.todos);
                 $scope.pages = todoSynchronizer.getPageNumbers();
                 $scope.emails = todoSynchronizer.getAllUserEmails();
-                
+
 
                 console.log('pages');
                 console.log($scope.pages);
@@ -167,7 +170,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     };
 
     $scope.remove = function (index) {
-        dialogs.closeDialog.windowIndex = index;        
+        dialogs.closeDialog.windowIndex = index;
         dialogs.closeDialog.todo = todoSynchronizer.getTodoCurrentPage(index);
         openDialog(dialogs.closeDialog, 400, 125);
     };
@@ -219,7 +222,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                                             $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
                                             var pNum = todoSynchronizer.getCurrentPageNum();
 //                                            $("#page_" + pNum).addClass('first-page');
-                                            dialogs.addDialog.window
+//                                            dialogs.addDialog.window
+                                            closeDialog(dialogs.addDialog);
                                         }
                                     });
                         });
@@ -297,11 +301,12 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     };
 
     function closeConfirmDialog() {
-        $(dialogs.closeDialog.window).animate({
-            width: '10px',
-            height: '10px',
-            opacity: 0
-        }, 500);
+        
+//                .animate({
+//            width: '10px',
+//            height: '10px',
+//            opacity: 0
+//        }, 500);
         $("#todo_" + dialogs.closeDialog.windowIndex).delay(400).animate({
             width: 0,
             height: 0,
@@ -310,7 +315,8 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             display: 'none'
         }, 1000, function () {
             dialogs.closeDialog.windowIndex = undefined;
-            dialogs.closeDialog.window.close();
+            closeDialog(dialogs.closeDialog);
+//            dialogs.closeDialog.window.close();
             dialogs.closeDialog.isOpen = false;
 
             todoSynchronizer.removeTodo(dialogs.closeDialog.todo.id);
@@ -359,9 +365,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     function initAddTodoBtn() {
         $("#add-todo").on('click', function () {
             initTodoModel($scope.todoModel);
-            dialogs.addDialog = {};
-            dialogs.addDialog.window = document.getElementById('addTodoDialog');
-            dialogs.addDialog.window.showModal();
+            openDialog(dialogs.addDialog, 500, 490);
         });
     }
 
@@ -394,19 +398,21 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         model.sendTo = undefined;
 //        model.value = undefined;
     }
-    
-    function openDialog(dialog, width, height){
-        if(dialog && width && height){
+
+    function openDialog(dialog, width, height) {
+        if (dialog && width && height) {
             var windw = dialog.window;
             var widStr = width + 'px';
             var hgtStr = height + 'px';
-            windw.addEventListener('close', function(e){
-                $(windw).css({
+            windw.addEventListener('close', function (e) {
+                $(windw).animate({
                     width: '10px',
-                    height: '10px'
-                }).children().css({
+                    height: '10px',
+                    opacity: 0
+                }, 500).children().css({
                     opacity: 0
                 });
+                windw.close();
                 dialog.isOpen = false;
             });
             windw.showModal();
@@ -418,10 +424,15 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 opacity: 0
             }).animate({
                 opacity: 1
-            }, 1500, function(){
+            }, 1500, function () {
                 dialog.isOpen = true;
             });
         }
+    }
+
+    function closeDialog(dialog) {
+        console.log('triggering close');
+        $(dialog).trigger('close');
     }
 });
 
