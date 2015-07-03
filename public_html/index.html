@@ -4,7 +4,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<html>
+<html ng-app="myapp">
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
@@ -16,8 +16,8 @@ and open the template in the editor.
         <link rel="stylesheet" type="text/css" href="css/page.css" />
 
     </head>
-    <body ng-app="myapp">
-        <div class="container" ng-controller="TodoController" >
+    <body ng-controller="TodoController">
+        <div class="container" >
             <header>
                 <input type="text" placeholder="Search"/>
             </header>
@@ -36,6 +36,7 @@ and open the template in the editor.
             <to-do></to-do>
 
             <dialog id="addTodoDialog">
+                <span class="iconicfill-x remove" id="close-addtodo" data-parent="addTodoDialog"></span>
                 <label class="add-todo-label-top">Add Todo</label>
                 <div class="todo-label-input-con" id="value-input">
                     <label class="add-todo-label" id="value-label">Value:</label>
@@ -89,7 +90,7 @@ and open the template in the editor.
     <dialog id="confirmDialog">
         <div id="confirmBanner">Confirm Decision</div>
         <label>Are you sure!</label>
-        <div class="diaBtn confirm" id="closeConfirm">Yes</div>
+        <div class="diaBtn confirm" id="closeConfirm" data-parent="confirmDialog" ng-click="closeDialog('confirmDialog')">Yes</div>
         <div class="diaBtn cancel" id="closeCancel">Cancel</div>
     </dialog>
 
@@ -98,8 +99,8 @@ and open the template in the editor.
     <script type="text/javascript" src="js/libs/jquery/jquery-color-2.1.2.js"></script>
     <script type="text/javascript" src="js/libs/md5/md5.js"></script>
     <script type="text/javascript" src="js/libs/moment/moment.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-animate.js"></script>    
+    <script type="text/javascript" src="js/libs/angular/angular-1.4.0.min.js"></script>
+    <script type="text/javascript" src="js/libs/angular/ngAnimate/ngAnimate.js"></script>    
     <script type="text/javascript" src="js/TodoSynchronizer.js"></script>
     <script type="text/javascript" src="js/TodoController.js"></script>
 </body>

@@ -15,6 +15,10 @@ function TodoSynchonizer(allTodos) {
     ///////////PRIVATE METHODS///////////////
 
     var page = function (p) {
+        if (!isValidPage(p)) {
+            return undefined;
+        }
+        currPage = p;
         return sliceTodos(parseInt(p));
     };
 
@@ -39,7 +43,7 @@ function TodoSynchonizer(allTodos) {
             if (shouldInit) {
                 todoList = initTodos(todoList);
 //                viewableTodos = initTodos(viewableTodos);
-            }            
+            }
             if (todoList.length <= maxViewable) {
                 numPages = 1;
                 viewableTodos = todoList;
@@ -49,7 +53,7 @@ function TodoSynchonizer(allTodos) {
                 viewableTodos = todoList.slice(0, maxViewable);
                 currPage = 1;
             }
-            
+
         }
     };
 
@@ -224,12 +228,12 @@ function TodoSynchonizer(allTodos) {
             }
             return user;
         },
-        getAllUserEmails: function(){
+        getAllUserEmails: function () {
             var allUsers = [];
-            todos.forEach(function(element, index, array){
+            todos.forEach(function (element, index, array) {
                 var user = element.createdBy;
-                if(user.email){
-                    if(allUsers.indexOf(user.email) === -1){
+                if (user.email) {
+                    if (allUsers.indexOf(user.email) === -1) {
                         allUsers.push(user.email);
                     }
                 }
@@ -240,7 +244,7 @@ function TodoSynchonizer(allTodos) {
             return viewableTodos;
         },
         getCurrentPageNum: function () {
-            return currPage;
+            return currPage.toString();
         },
         getTodoCurrentPage: function (index) {
             if (index >= 0 && index < viewableTodos.length) {
@@ -261,11 +265,7 @@ function TodoSynchonizer(allTodos) {
             return currPage > 1;
         },
         getPage: function (p) {
-            if (!isValidPage(p)) {
-                return undefined;
-            }
-            currPage = p;
-            return page(currPage);
+            return page(p);
         },
         getPageNumbers: function () {
             var pageNums = [];

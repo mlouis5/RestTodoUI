@@ -91,30 +91,24 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
     var dialogs = {};
     dialogs.closeDialog = {};
-    dialogs.closeDialog = {};
-    dialogs.closeDialog.window = document.getElementById('confirmDialog');
+    dialogs.closeDialog.id = 'confirmDialog';
+
 
     dialogs.addDialog = {};
-    dialogs.addDialog.window = document.getElementById('addTodoDialog');
+    dialogs.addDialog.id = 'addTodoDialog';
+    dialogs.addDialog.callback =
+//    dialogs.addDialog.window = document.getElementById('addTodoDialog');
 
-    initTodoModel($scope.todoModel);
+    initTodoModel($scope.todoModel, false);
     initDialogCloseBtn();
     initAddTodoBtn();
 
     $http.get(todoApi.allTodos).
             success(function (data) {
-                console.log("pre-clean");
-                console.log(data);
                 todoSynchronizer = new TodoSynchonizer(data.todos);
                 $scope.pages = todoSynchronizer.getPageNumbers();
                 $scope.emails = todoSynchronizer.getAllUserEmails();
-
-
-                console.log('pages');
-                console.log($scope.pages);
                 $scope.todoDTO.todos = todoSynchronizer.defaultSort();
-
-                console.log($scope.todoDTO);
             });
 
     $scope.completed = function (index) {
@@ -215,15 +209,20 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                                     success(function (data) {
                                         var todo = data;
                                         if (todo !== undefined) {
+                                            var pNum = todoSynchronizer.getCurrentPageNum();
                                             console.log('Added todo successfully');
                                             console.log(todo);
                                             todoSynchronizer.addTodo(todo, true);
                                             $scope.pages = todoSynchronizer.getPageNumbers();
                                             $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
-                                            var pNum = todoSynchronizer.getCurrentPageNum();
+//                                            var pNum = todoSynchronizer.getCurrentPageNum();
+                                            console.log('current page num: ' + pNum);
 //                                            $("#page_" + pNum).addClass('first-page');
 //                                            dialogs.addDialog.window
-                                            closeDialog(dialogs.addDialog);
+//                                            exitDialog(dialogs.addDialog);
+                                            closeDialog(dialogs.addDialog.id);
+                                            initTodoModel($scope.todoModel, true);
+                                            $scope.pageChange(pNum);
                                         }
                                     });
                         });
@@ -243,7 +242,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 backgroundColor: 'transparent'
             }, 300);
         });
-        console.log($('#page_' + index));
+//        console.log($('#page_' + index));
         $('#page_' + index).animate({
             backgroundColor: '#02C03C'
         }, 500);
@@ -300,33 +299,78 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
     };
 
-    function closeConfirmDialog() {
-        
-//                .animate({
-//            width: '10px',
-//            height: '10px',
-//            opacity: 0
-//        }, 500);
-        $("#todo_" + dialogs.closeDialog.windowIndex).delay(400).animate({
+    function closeDialog(dialogId) {
+        var dialog = undefined;
+        for (var prop in dialogs) {
+            if (dialogs.hasOwnProperty(prop)) {
+                var propId = dialogs[prop].id;
+                if (propId === dialogId) {
+                    dialog = dialogs[prop];
+                    break;
+                }
+            }
+        }
+        if (dialog) {
+            dialog.callback(dialog);
+        }
+    }
+
+    function closeConfirmDialog(dialog) {
+        var todo = todoSynchronizer.getTodoCurrentPage(dialog.windowIndex);
+        if (todo) {
+            todo.isRemoved = true;
+            $http.put(todoApi.edit, todo).
+                    success(function (data) {
+                        todo = data;
+                        if (todo !== undefined) {
+                            $("#todo_" + dialog.windowIndex).animate({
+                                width: 0,
+                                height: 0,
+                                margin: 0,
+                                opacity: 0,
+                                display: 'none'
+                            }, 1000, function () {
+                                minimizeWindow(dialog, exitDialog);
+                                dialog.windowIndex = undefined;
+                                dialog.isOpen = false;
+
+                                todoSynchronizer.removeTodo(dialogs.closeDialog.todo.id);
+                                $timeout(function () {
+                                    $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
+                                    $scope.pages = todoSynchronizer.getPageNumbers();
+                                    dialog.todo = undefined;
+                                    var pNum = todoSynchronizer.getCurrentPageNum();
+                                    $("#page_" + pNum).addClass('first-page');
+                                });
+                            });
+                        }
+                    }).
+                    error(function () {
+                        minimizeWindow(dialog, exitDialog);
+                        dialog.windowIndex = undefined;
+                        dialog.isOpen = false;
+                    });
+        }
+    }
+
+    function closeAddTodoDialog(dialog) {
+        minimizeWindow(dialog, exitDialog);
+    }
+
+    function minimizeWindow(dialog, callback) {
+        var window = document.getElementById(dialog.id);
+        var jqWndw = $(window);
+        jqWndw.children().each(function (index) {
+            $(this).animate({
+                opacity: 0
+            }, 400);
+        });
+        jqWndw.delay(350).animate({
             width: 0,
             height: 0,
-            margin: 0,
-            opacity: 0,
-            display: 'none'
-        }, 1000, function () {
-            dialogs.closeDialog.windowIndex = undefined;
-            closeDialog(dialogs.closeDialog);
-//            dialogs.closeDialog.window.close();
-            dialogs.closeDialog.isOpen = false;
-
-            todoSynchronizer.removeTodo(dialogs.closeDialog.todo.id);
-            $timeout(function () {
-                $scope.todoDTO.todos = todoSynchronizer.getCurrentPage();
-                $scope.pages = todoSynchronizer.getPageNumbers();
-                dialogs.closeDialog.todo = undefined;
-                var pNum = todoSynchronizer.getCurrentPageNum();
-                $("#page_" + pNum).addClass('first-page');
-            });
+            opacity: 0
+        }, 500, function () {
+            callback(dialog);
         });
     }
 
@@ -345,27 +389,18 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
 
     function initDialogCloseBtn() {
         $('#closeConfirm').on("click", function () {
-            var todo = $scope.todoDTO.todos[dialogs.closeDialog.windowIndex];
-            todo.isRemoved = true;
-
-            $http.put(todoApi.edit, todo).
-                    success(function (data) {
-                        todo = data;
-                        if (todo !== undefined) {
-                            closeConfirmDialog();
-                        }
-                    }).
-                    error(function () {
-                        closeConfirmDialog();
-                    });
+            closeDialog($(this).attr('data-parent'));
         });
     }
-    ;
 
     function initAddTodoBtn() {
         $("#add-todo").on('click', function () {
-            initTodoModel($scope.todoModel);
+            initTodoModel($scope.todoModel, false);
             openDialog(dialogs.addDialog, 500, 490);
+            $('#close-addtodo').on('click', function () {
+                closeDialog($(this).attr('data-parent'));
+                $(this).unbind('click');
+            });
         });
     }
 
@@ -381,7 +416,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         });
     }
 
-    function initTodoModel(model) {
+    function initTodoModel(model, eraseValue) {
         model.createdBy = {};
         model.createdBy.email = undefined;
         model.createdBy.fname = undefined;
@@ -396,12 +431,14 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         model.recurrence = 'One-Time';
         model.type = 'Todo';
         model.sendTo = undefined;
-//        model.value = undefined;
+        if (eraseValue) {
+            model.value = undefined;
+        }
     }
 
     function openDialog(dialog, width, height) {
         if (dialog && width && height) {
-            var windw = dialog.window;
+            var windw = document.getElementById(dialog.id);
             var widStr = width + 'px';
             var hgtStr = height + 'px';
             windw.addEventListener('close', function (e) {
@@ -409,10 +446,9 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                     width: '10px',
                     height: '10px',
                     opacity: 0
-                }, 500).children().css({
+                }, 500).delay(500).children().css({
                     opacity: 0
                 });
-                windw.close();
                 dialog.isOpen = false;
             });
             windw.showModal();
@@ -430,9 +466,13 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         }
     }
 
-    function closeDialog(dialog) {
-        console.log('triggering close');
-        $(dialog).trigger('close');
+    function exitDialog(dialog) {
+//        console.log('triggering close');
+        var window = document.getElementById(dialog.id);
+        window.close();
     }
+
+    dialogs.closeDialog.callback = closeConfirmDialog;
+    dialogs.addDialog.callback = closeAddTodoDialog;
 });
 
