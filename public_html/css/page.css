@@ -26,7 +26,7 @@ body{
     margin: 0;
     padding: 0;
     font-family: 'Walkway Black', sans-serif;
-    background: linear-gradient(90deg, #464A4D, #303435);
+    background-color: #303435;/*linear-gradient(90deg, #464A4D, #303435);*/
     overflow: hidden;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -62,6 +62,147 @@ body::-webkit-resizer{
     width: 0;
     outline: none;
 }
+
+.email-container{
+    position: absolute;
+    top: 270px;
+    left: 75px;
+    width: 300px;
+    height: auto;
+    max-height: 600px;
+    /*border: 2px solid red;*/
+    display: inline-block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 1px 3px;
+}
+.email-container::-webkit-scrollbar {
+    width: 6px;
+} 
+.email-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
+    border-radius: 4px;
+} 
+.email-container::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
+}
+
+.email-header{
+    position: relative;
+    top: 0;
+    left: 0;
+    border: none;
+    /*border: 2px solid #71BDF4;*/
+    height: 25px;
+    padding-top: 10px;
+    padding-left: 5px;
+    margin-bottom: 8px;
+}
+.email-header input[type="checkbox"]{
+    margin-top: 10px;
+}
+.email-header label {
+    display: inline-block;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
+    margin-right: 15px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    color: #f0f0f0;
+}
+.email-header label:before {
+    content:"";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    position: absolute;
+    left: 0;
+    bottom: 1px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+    border-radius: 3px;
+}
+.email-header input[type=checkbox] {
+    display: none;
+}
+.email-header input[type=checkbox]:checked + label:before {
+    content:"\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 15px;
+    color: #f3f3f3;
+    text-align: center;
+    line-height: 15px;
+}
+.email-header .add-email {
+    float: right;
+    color: #02C03C;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+.css-input { 
+    width: 85%;
+    padding:3px; 
+    font-size:15px; 
+    text-align:left; 
+    border-width:3px; 
+    border-radius:6px; 
+    border-style:solid; 
+    border-color:#adadad; 
+    background-color:#fafafa; 
+    text-shadow:0px 0px 0px rgba(42,42,42,.75); 
+    font-weight:bold;  
+} 
+.css-input:focus { 
+    outline:none; 
+}
+.email-select{
+    position: relative;
+    margin-bottom: 10px;
+}
+.email-select label:before {
+    content:"";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    position: absolute;
+    left: 5px;
+    bottom: 8px;
+    background-color: #aaa;
+    box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, .3), 0px 1px 0px 0px rgba(255, 255, 255, .8);
+    border-radius: 2px;
+    cursor: pointer;
+}
+.email-select input[type=checkbox] {
+    display: none;
+}
+.email-select input[type=email] {
+    margin-left: 27px;
+    width: 85%;
+}
+.email-select button[type=button]{
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    background-color: #71BDF4;
+}
+.email-select input[type=checkbox]:checked + label:before {
+    content:"\2713";
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, .2);
+    font-size: 16px;
+    color: #f3f3f3;
+    text-align: center;
+    line-height: 15px;
+}
+
+
+
+
+
 
 .container{
     position: relative;
@@ -106,6 +247,11 @@ header{
     line-height: 30px;
     color: #3f3f3f;
     cursor: pointer;
+}
+
+.type-but > a, u {
+    text-decoration: none;
+    color: #000000;
 }
 
 polygon{
@@ -347,12 +493,17 @@ line{
 
 #addTodoDialog{
     width: 500px;
-    height: auto;
+    height: 500px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -300px;
 }
 .todo-label-input-con{
     display: inline-block;
     width: inherit;
-    height: 45px;
+    height: 35px;
     position: relative;
     /*border: 1px solid red;*/
     margin-bottom: 10px;
@@ -362,27 +513,29 @@ line{
     margin-right: 10px;
     display: inline-block;
     text-align: right;
-    line-height: 40px;
+    line-height: 30px;
     padding-left: 5px;
     /*border: 2px solid blue;*/
     width: 125px;
-    font-size: 24px;
+    font-size: 18px;
+    color: #f0f0f0;
 }
 .todoInput{
     position: relative;
     display: inline-block;
-    width: 348px;
-    height: 40px;
+    width: 350px;
+    height: 30px;
     float: right;
-    font-size: 20px;
+    font-size: 16px;
     box-shadow: 0 1px 3px;
     padding-left: 2px;
-    outline: 0;
+    outline: none;
+    border-color: #7f7f7f;
     transition: .5s;
 }
 .todoInput:focus{
     transition: .5s;
-    border: 2px solid #80CCFF;
+    border-color: #02C03C;
 }
 select.todoInput {
     width: 355px;
@@ -392,21 +545,21 @@ select.todoInput {
 }
 textarea.todoInput{
     display: inline-block;
-    height: 160px;
+    height: 120px;
     resize: none;
 }
 #value-input{
-    height: 165px; 
+    height: 125px; 
 }
 textarea::-webkit-scrollbar {
     width: 6px;
 }
- 
+
 textarea::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3); 
     border-radius: 4px;
 }
- 
+
 textarea::-webkit-scrollbar-thumb {
     border-radius: 4px;
     -webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.5); 
@@ -455,19 +608,29 @@ textarea::-webkit-scrollbar-thumb {
     height: 40px;
     text-align: center;
     line-height: 40px;
+    color: #f0f0f0;
+    margin-left: 65px;
 }
 
 .todo-clear-btn{
     display: block;
     width: 100px;
     height: 40px;
-    border: 2px solid black;
+    border: 2px solid #f0f0f0;
+    color: #f0f0f0;
     font-size: 18px;
     text-align: center;
     line-height: 40px;
     float: right;
     margin-right: -2px;
     cursor: pointer;
+    float: left;
+    margin-left: 146px;
+}
+#add-btn{
+    float: right;
+    border: 2px solid #02C03C;
+    margin-right: 1px;
 }
 
 /***********ng-repeat animation*************/
@@ -509,4 +672,20 @@ dialog{
     bottom: 0;
     left: 0;
     right: 0;
+}
+
+.close-animatedModal{
+    color: #f0f0f0;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    left: 50%;
+    top: 20px;
+    font-size: 20px;
+    margin-left: -20px;
+    border: 1px solid #F47771;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
 }
