@@ -75,7 +75,7 @@ app.directive('transformText', function () {
 app.controller("TodoController", function ($scope, $http, $timeout) {
 
     var todoApi = {};
-    todoApi.host = 'localhost';
+    todoApi.host = '192.168.11.119';
     todoApi.port = '8090';
     todoApi.allTodos = 'http://' + todoApi.host + ':' + todoApi.port + '/todo';
     todoApi.edit = 'http://' + todoApi.host + ':' + todoApi.port + '/todo/edit';
