@@ -90,7 +90,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
     $scope.email = {
         sendTo: new Array(),
         emailChecked: false,
-        show: true,
+        show: false,
         lock: function (allEmails) {
             if (allEmails) {
                 allEmails.forEach(function (val, idx, arr) {
@@ -256,7 +256,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
                 width: '282px',
                 opacity: 1
             }, 550, function () {
-                $scope.email.show = true;
+//                $scope.email.show = true;
             });
         } else if (width > 0) {
             var text = emailInput.val();
@@ -291,7 +291,7 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
             $(this).css({
                 display: 'none'
             });
-            $scope.email.show = false;
+//            $scope.email.show = false;
         });
     }
 
@@ -593,5 +593,38 @@ app.controller("TodoController", function ($scope, $http, $timeout) {
         overflow: 'auto'
     };
     $("#add-modal").animatedModal(options);
+
+    function launchIntoFullscreen(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    }
+
+    document.getElementById('requestFullScreenId').addEventListener("click", function () {
+        // Launch fullscreen for browsers that support it!
+        if (!$scope.isFullScreen) {
+            launchIntoFullscreen(document.documentElement); // the whole page
+            $scope.isFullScreen = true;
+        } else {
+            exitFullscreen();
+            $scope.isFullScreen = false;
+        }
+    });
 });
 

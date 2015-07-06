@@ -8,7 +8,7 @@ and open the template in the editor.
     <head>
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=.8, minimum-scale=.8, maximum-scale=1, user-scalable=no, target-densitydpi=device-dpi">
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
@@ -20,91 +20,95 @@ and open the template in the editor.
 
     </head>
     <body ng-controller="TodoController">
-        <div class="email-container" ng-if="email.show">
-            <div class="email-header">
-                <input id="all-checkbox" type="checkbox" ng-click="selectAllEmail('all-checkbox')"/>
-                <label for="all-checkbox">Select All</label>                
-                <i class="add-email fa fa-plus" ng-click="addCustomEmail()"></i>
+        <div id="fullscreen">
+            <div id="requestFullScreenId"></div>
+            <div class="email-container" ng-if="email.show">
+                <div class="email-header">
+                    <input id="all-checkbox" type="checkbox" ng-click="selectAllEmail('all-checkbox')"/>
+                    <label for="all-checkbox">Select All</label>                
+                    <i class="add-email fa fa-plus" ng-click="addCustomEmail()"></i>
+                </div>
+                <div class="email-select" ng-repeat="mail in email.sendTo">
+                    <input type="checkbox" class="css-checkbox" id="checkbox-{{$index}}" ng-model="mail.selected" ng-checked="mail.selected"/>
+                    <label for="checkbox-{{$index}}" class="css-label lite-green-check"></label>
+                    <input class="css-input" type="email" ng-model="mail.email" ng-disabled="mail.locked"/>
+                    <!--<button type="button" ng-click="selectEmail(mail)">Add</button>-->
+                </div>
             </div>
-            <div class="email-select" ng-repeat="mail in email.sendTo">
-                <input type="checkbox" class="css-checkbox" id="checkbox-{{$index}}" ng-model="mail.selected" ng-checked="mail.selected"/>
-                <label for="checkbox-{{$index}}" class="css-label lite-green-check"></label>
-                <input class="css-input" type="email" ng-model="mail.email" ng-disabled="mail.locked"/>
-                <!--<button type="button" ng-click="selectEmail(mail)">Add</button>-->
-            </div>
-        </div>
-        <div class="container" >
-            <header>
-                <input type="text" placeholder="Search"/>
-            </header>
+            <div class="container" >
+                <!--<header>
+                    <input type="text" placeholder="Search"/>
+                </header>-->
 
-            <div>{{todoModel| json}}</div>
+                <!--<div>{{todoModel| json}}</div>-->
 
-            <div class="todo-val-container">    
-                <input class="text-input" type="text" placeholder="Enter Todo" ng-model="todoModel.value"/>               
-                <div class="type-but todo-but" id="add-todo"><a id="add-modal" href="#animatedModal">Add Todo</a></div>
-            </div>
+                <div class="todo-val-container">    
+                    <input class="text-input" type="text" placeholder="Enter Todo" ng-model="todoModel.value"/>               
+                    <div class="type-but todo-but" id="add-todo"><a id="add-modal" href="#animatedModal">Add Todo</a></div>
+                </div>
 
-            <div class="page-container">
-                <div class="page" ng-class="{'first-page': $index === 0}" id="page_{{($index + 1)}}" ng-repeat="page in pages" ng-click="pageChange(($index + 1))">{{page}}</div>
-            </div>
+                <div class="page-container">
+                    <div class="page" ng-class="{'first-page': $index === 0}" id="page_{{($index + 1)}}" ng-repeat="page in pages" ng-click="pageChange(($index + 1))">{{page}}</div>
+                </div>
 
-            <to-do></to-do>
+                <to-do></to-do>
 
-            <div id="animatedModal">
-                <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
-                <div class="close-animatedModal">X</div>
+                <div id="animatedModal">
+                    <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID  class="close-animatedModal" -->
+                    <div class="close-animatedModal">X</div>
 
-                <div class="modal-content">
-                    <div id="addTodoDialog">
-                        <label class="add-todo-label-top">Add Todo</label>
-                        <div class="todo-label-input-con" id="value-input">
-                            <label class="add-todo-label" id="value-label">Value:</label>
-                            <!--<input class="todoInput" id="todo-value" ng-model="todoModel.value"/>-->
-                            <textarea class="todoInput" ROWS="5" COLS="50" ng-model="todoModel.value" transform-text>
-                            </textarea>
+                    <div class="modal-content">
+                        <div id="addTodoDialog">
+                            <label class="add-todo-label-top">Add Todo</label>
+                            <div class="todo-label-input-con" id="value-input">
+                                <label class="add-todo-label" id="value-label">Value:</label>
+                                <!--<input class="todoInput" id="todo-value" ng-model="todoModel.value"/>-->
+                                <textarea class="todoInput" ROWS="5" COLS="50" ng-model="todoModel.value" transform-text>
+                                </textarea>
+                            </div>
+                            <div class="todo-label-input-con">
+                                <label class="add-todo-label" id="priority-label">Priority:</label>
+                                <select class="todoInput" id="todo-priority" ng-model="todoModel.priority">
+                                    <option selected value="LOW">LOW</option>
+                                    <option value="MED">MED</option>
+                                    <option value="HIGH">HIGH</option>
+                                </select>
+                            </div>
+                            <div class="todo-label-input-con">
+                                <label class="add-todo-label" id="recurrence-label">Recurrence:</label>
+                                <!--<input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>-->
+                                <select class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence">
+                                    <option value='One-Time' selected>One-Time</option>
+                                    <option value='Daily'>Daily</option>
+                                    <option value='Weekly'>Weekly</option>
+                                    <option value='Bi-Weekly'>Bi-Weekly</option>
+                                    <option value='Semi-Monthly'>Semi-Monthly</option>
+                                    <option value='Monthly'>Monthly</option>
+                                    <option value='quarterly'>quarterly</option>
+                                    <option value='Semi-Annually'>Semi-Annually</option>
+                                    <option value='Annually'>Annually</option>
+                                </select>
+                            </div>
+                            <!--                <div class="todo-label-input-con">
+                                                <label class="add-todo-label" id="due-by-label">Due By:</label>
+                                                <input class="todoInput" id="todo-due-by" transform-date ng-model="todoModel.dueBy"/>
+                                                <input class="todoInput" id="todo-due-by" />
+                                            </div>-->
+                            <div class="todo-label-input-con">
+                                <label class="add-todo-label" id="email-label">Email:</label>
+                                <!--<input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>-->
+                                <select class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" required="true" ng-change="emailChanged()" ng-options="email for email in emails">
+                                    <option value="" selected hidden></option>
+                                </select>
+                            </div>
+                            <div class="todo-label-input-con">
+                                <label class="add-todo-label" id="pin-label">Send To:</label>
+                                <input class="todoInput" id="todo-pin" ng-model="todoModel.sendTo"/>
+                                <!--ng-focus="email.show = true" ng-blur="email.show = false"-->
+                            </div>
+                            <div class="todo-clear-btn" ng-click="resetTodoModel(todoModel, true)">Clear</div>
+                            <div class="todo-clear-btn" id="add-btn"  ng-click="addTodo()">Add</div>
                         </div>
-                        <div class="todo-label-input-con">
-                            <label class="add-todo-label" id="priority-label">Priority:</label>
-                            <select class="todoInput" id="todo-priority" ng-model="todoModel.priority">
-                                <option selected value="LOW">LOW</option>
-                                <option value="MED">MED</option>
-                                <option value="HIGH">HIGH</option>
-                            </select>
-                        </div>
-                        <div class="todo-label-input-con">
-                            <label class="add-todo-label" id="recurrence-label">Recurrence:</label>
-                            <!--<input class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence"/>-->
-                            <select class="todoInput" id="todo-recurrence" ng-model="todoModel.recurrence">
-                                <option value='One-Time' selected>One-Time</option>
-                                <option value='Daily'>Daily</option>
-                                <option value='Weekly'>Weekly</option>
-                                <option value='Bi-Weekly'>Bi-Weekly</option>
-                                <option value='Semi-Monthly'>Semi-Monthly</option>
-                                <option value='Monthly'>Monthly</option>
-                                <option value='quarterly'>quarterly</option>
-                                <option value='Semi-Annually'>Semi-Annually</option>
-                                <option value='Annually'>Annually</option>
-                            </select>
-                        </div>
-                        <!--                <div class="todo-label-input-con">
-                                            <label class="add-todo-label" id="due-by-label">Due By:</label>
-                                            <input class="todoInput" id="todo-due-by" transform-date ng-model="todoModel.dueBy"/>
-                                            <input class="todoInput" id="todo-due-by" />
-                                        </div>-->
-                        <div class="todo-label-input-con">
-                            <label class="add-todo-label" id="email-label">Email:</label>
-                            <!--<input class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" ng-change="emailChanged()"/>-->
-                            <select class="todoInput" id="todo-email" ng-model="todoModel.createdBy.email" required="true" ng-change="emailChanged()" ng-options="email for email in emails">
-                                <option value="" selected hidden></option>
-                            </select>
-                        </div>
-                        <div class="todo-label-input-con">
-                            <label class="add-todo-label" id="pin-label">Send To:</label>
-                            <input class="todoInput" id="todo-pin" ng-focus="email.show = true" ng-blur="email.show = false" ng-model="todoModel.createdBy.pin"/>
-                        </div>
-                        <div class="todo-clear-btn" ng-click="resetTodoModel(todoModel, true)">Clear</div>
-                        <div class="todo-clear-btn" id="add-btn"  ng-click="addTodo()">Add</div>
                     </div>
                 </div>
             </div>
@@ -127,8 +131,8 @@ and open the template in the editor.
     <script type="text/javascript" src="js/libs/angular/ngAnimate/ngAnimate.js"></script> 
     <script type="text/javascript" src="js/TodoSynchronizer.js"></script>
     <script type="text/javascript" src="js/TodoController.js"></script>
-<!--    <script>
-       $("#add-modal").animatedModal();
-    </script>-->
+    <!--    <script>
+           $("#add-modal").animatedModal();
+        </script>-->
 </body>
 </html>
